@@ -49,6 +49,23 @@ std::vector<std::string> generate_permutation(int N)
     return ret;
 }
 
+void set_row_col_inf(std::vector<std::vector<double>>& graph, size_t row, size_t col)
+{
+    const size_t N = graph.size();
+
+    // sets all elements in the row to inf
+    for (auto& ele : graph[row])
+    {
+        ele = constants::INF;
+    }
+
+    // sets all elements in the column to inf
+    for (size_t r = 0; r < N; r++)
+    {
+        graph[r][col] = constants::INF;
+    }
+}
+
 std::tuple<std::vector<std::vector<double>>, double> reduce_graph(const std::vector<std::vector<double>>& graph)
 {
     const size_t N = graph.size();
