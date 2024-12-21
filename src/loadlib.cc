@@ -3,7 +3,7 @@
 #include <iostream> // std::cerr, std::cout
 #include <vector>   // std::vector
 #include <sstream>  // std::istringstream
-// #include <span>     // std::span
+#include <limits>   // std::numeric_limits<double>::max()
 
 #include "filesystem/loadlib.hpp"
 #include "math/mathlib.hpp"     // distance
@@ -96,7 +96,7 @@ std::vector<graph::Node> get_nodes_from_file(const std::string& filename)
 std::vector<std::vector<double>> create_graph(const std::vector<graph::Node>& nodes)
 {
     const size_t N = nodes.size();
-    std::vector<std::vector<double>> graph(N, std::vector<double>(N, 0.0));
+    std::vector<std::vector<double>> graph(N, std::vector<double>(N, std::numeric_limits<double>::max()));
 
     // constructs the graph
     // 0 -> 1, 0 -> 2, 0 -> 3, ...
