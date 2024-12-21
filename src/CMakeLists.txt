@@ -1,6 +1,7 @@
 file(GLOB MATH_HEADER_LIST CONFIGURE_DEPENDS "${TSP_SOURCE_DIR}/include/math/*.hpp")
 file(GLOB FILESYSTEM_HEADER_LIST CONFIGURE_DEPENDS "${TSP_SOURCE_DIR}/include/filesystem/*.hpp")
 file(GLOB GRAPH_HEADER_LIST CONFIGURE_DEPENDS "${TSP_SOURCE_DIR}/include/graph/*.hpp")
+file(GLOB CONSTANT_HEADER_LIST CONFIGURE_DEPENDS "${TSP_SOURCE_DIR}/include/constant/*.hpp")
 
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -15,6 +16,6 @@ target_include_directories(graph_library PUBLIC ../include)
 target_link_libraries(math_library PUBLIC Boost::boost)
 target_link_libraries(graph_library PUBLIC Boost::boost math_library)
 
-target_compile_features(math_library PUBLIC cxx_std_20)  # requires C++20 for concept
+target_compile_features(math_library PUBLIC cxx_std_17)  # requires C+17 for inline variables
 target_compile_features(filesystem_library PUBLIC cxx_std_11)
-target_compile_features(graph_library PUBLIC cxx_std_11)
+target_compile_features(graph_library PUBLIC cxx_std_17)

@@ -8,6 +8,7 @@
 #include "filesystem/loadlib.hpp"
 #include "math/mathlib.hpp"     // distance
 #include "graph/nodelib.hpp"    // graph::Node
+#include "constant/constantlib.hpp"     // constants::INF
 
 void read_file_line_by_line(const std::string& filename)
 {
@@ -96,7 +97,7 @@ std::vector<graph::Node> get_nodes_from_file(const std::string& filename)
 std::vector<std::vector<double>> create_graph(const std::vector<graph::Node>& nodes)
 {
     const size_t N = nodes.size();
-    std::vector<std::vector<double>> graph(N, std::vector<double>(N, std::numeric_limits<double>::max()));
+    std::vector<std::vector<double>> graph(N, std::vector<double>(N, constants::INF));
 
     // constructs the graph
     // 0 -> 1, 0 -> 2, 0 -> 3, ...

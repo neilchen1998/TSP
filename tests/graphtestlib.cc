@@ -7,7 +7,7 @@
 
 TEST_CASE("Brute Force", "[main]")
 {
-    std::vector<std::vector<double>> graph = 
+    std::vector<std::vector<double>> graph =
     {
         {0, 4, 1, 9},
         {3, 0, 6, 11},

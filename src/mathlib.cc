@@ -1,11 +1,15 @@
 #include <cmath>        // square
-#include <algorithm>    // std::prev_permutation, std::
+#include <algorithm>    // std::prev_permutation, std::min_element
 #include <iostream>     // std::cout
-#include <string>
+#include <string>       // std::string
+#include <limits>       // constants::INF
+#include <tuple>        // std::tuple
+#include <numeric>      // std::reduce
 
 #include <boost/math/special_functions/factorials.hpp>  //boost::math::factorial
 
 #include "math/mathlib.hpp"
+#include "constant/constantlib.hpp"     // constants::INF
 
 double distance(double x1, double y1, double x2, double y2)
 {
@@ -43,4 +47,51 @@ std::vector<std::string> generate_permutation(int N)
     } while (std::next_permutation(s.begin(), s.end()));
     
     return ret;
+}
+
+std::tuple<std::vector<std::vector<double>>, double> reduce_graph(const std::vector<std::vector<double>>& graph)
+{
+    const size_t N = graph.size();
+    std::vector<std::vector<double>> ret(graph);
+    std::vector<double> reducedValues;
+
+    // loops through each row
+    for (auto& row : ret)
+    {
+        // finds the minimum value
+        double min = *std::min_element(row.cbegin(), row.cend());
+
+        reducedValues.push_back(min);
+
+        // subtracts each element with the minimum value
+        for (double& ele : row)
+        {
+            // only subtracts the element if it is not infinite
+            ele = (ele < constants::INF) ? (ele - min) : ele;
+        }
+    }
+
+    // loops through each column
+    for (size_t c = 0; c < N; c++)
+    {
+        // loops through each element in the column
+        double min = constants::INF;
+        for (size_t r = 0; r < N; r++)
+        {
+            min = std::min(ret[r][c], min);
+        }
+
+        reducedValues.push_back(min);
+
+        // subtracts each element with the minimum value
+        for (size_t r = 0; r < N; r++)
+        {
+            // only subtracts the element if it is not infinite
+            ret[r][c] = (ret[r][c] < constants::INF) ? (ret[r][c] - min) : ret[r][c];
+        }
+    }
+
+    double reducedValue = std::reduce(reducedValues.cbegin(), reducedValues.cend());
+
+    return {ret, reducedValue};
 }
