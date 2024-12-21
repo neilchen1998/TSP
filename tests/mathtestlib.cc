@@ -4,10 +4,23 @@
 
 #include "math/mathlib.hpp"
 
-TEST_CASE("Dummy", "[main]")
+TEST_CASE("Permutation", "[main]")
 {
-    SECTION ("Different Node", "[main]")
+    SECTION ("Small", "[main]")
     {
-        REQUIRE (5.0 == 5);
+        size_t N = 4;
+        size_t sz = 24;
+
+        auto ret = generate_permutation(N);
+        REQUIRE (ret.size() == sz);
+    }
+
+    SECTION ("Large", "[main]")
+    {
+        size_t N = 10;
+        size_t sz = 3628800;
+
+        auto ret = generate_permutation(N);
+        REQUIRE (ret.size() == sz);
     }
 }
