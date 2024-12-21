@@ -78,7 +78,10 @@ std::tuple<std::vector<std::vector<double>>, double> reduce_graph(const std::vec
         // finds the minimum value
         double min = *std::min_element(row.cbegin(), row.cend());
 
-        reducedValues.push_back(min);
+        if (min < constants::INF)
+        {
+            reducedValues.push_back(min);
+        }
 
         // subtracts each element with the minimum value
         for (double& ele : row)
@@ -98,7 +101,10 @@ std::tuple<std::vector<std::vector<double>>, double> reduce_graph(const std::vec
             min = std::min(ret[r][c], min);
         }
 
-        reducedValues.push_back(min);
+        if (min < constants::INF)
+        {
+            reducedValues.push_back(min);
+        }
 
         // subtracts each element with the minimum value
         for (size_t r = 0; r < N; r++)
