@@ -38,7 +38,6 @@ std::vector<graph::Node> get_nodes_from_file(const std::string& filename)
 {
     std::ifstream file(filename);
     std::string str;
-    std::size_t skipCnt = 0;
     std::size_t num = 0;
     std::vector<graph::Node> nodes;
 
@@ -52,7 +51,6 @@ std::vector<graph::Node> get_nodes_from_file(const std::string& filename)
     while (std::getline(file, str) && str != "NODE_COORD_SECTION")
     {
         // skipping lines
-        ++skipCnt;
     }
 
     // counts the number of elemnents
@@ -62,7 +60,6 @@ std::vector<graph::Node> get_nodes_from_file(const std::string& filename)
     }
 
     #if DEBUG
-    std::cout << "Numbers of lines that we are skipping: " << skipCnt << std::endl;
     std::cout << "Numbers of elements: " << num << std::endl;
     #endif
 
