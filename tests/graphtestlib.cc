@@ -3,6 +3,7 @@
 #include <catch2/catch.hpp>
 #include <vector>   // std::vector
 
+#include "constant/constantlib.hpp"     // constants::INF
 #include "graph/solverlib.hpp"
 #include "constant/constantlib.hpp" // constants::INF
 
