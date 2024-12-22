@@ -4,6 +4,7 @@
 #include <vector>   // std::vector
 
 #include "graph/solverlib.hpp"
+#include "constant/constantlib.hpp" // constants::INF
 
 TEST_CASE("Brute Force", "[main]")
 {

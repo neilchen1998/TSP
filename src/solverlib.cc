@@ -4,6 +4,7 @@
 #include <iostream> // std::cout
 
 #include "math/mathlib.hpp"
+#include "constant/constantlib.hpp"     // constants::INF
 
 double graph::brute_force(const std::vector<std::vector<double>> &graph)
 {
@@ -50,8 +51,6 @@ std::tuple< std::vector<std::vector<double>>, double> graph::explore_new_node(co
     auto [nextGraph, nextReducedVal] = reduce_graph(curGraph);
 
     ret = curCost + curReducedVal + nextReducedVal;
-
-    graph::print_graph(nextGraph);
 
     return {nextGraph, ret};
 }
