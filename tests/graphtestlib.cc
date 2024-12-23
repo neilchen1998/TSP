@@ -75,7 +75,7 @@ TEST_CASE("Branch and Bound", "[main]")
         REQUIRE (ret_graph == ans_graph);
     }
 
-    SECTION ("Solver", "[main]")
+    SECTION ("Explore a new node", "[main]")
     {
         const std::vector<std::vector<double>> graph =
         {
@@ -85,9 +85,19 @@ TEST_CASE("Branch and Bound", "[main]")
             {19, 6, 18, constants::INF, 3},
             {16, 4, 7, 16, constants::INF}
         };
-        const double ans_cost = 28;
-        double ret_cost = graph::solver::branch_and_bound(graph);
-        REQUIRE (ret_cost == ans_cost);
+        const double ans_val = 25;
+        const std::vector<std::vector<double>> ans_graph =
+        {
+            {constants::INF, constants::INF, constants::INF, constants::INF, constants::INF},
+            {12, constants::INF, 11, constants::INF, 0},
+            {0, 3, constants::INF, constants::INF, 2},
+            {constants::INF, 3, 12, constants::INF, 0},
+            {11, 0, 0, constants::INF, constants::INF}
+        };
+        const size_t from = 0, to = 3;
+        auto [ret_graph, ret_val] = graph::explore_new_node(graph, from, to);
+        REQUIRE (ret_val == ans_val);
+        REQUIRE (ret_graph == ans_graph);
     }
 }
 
