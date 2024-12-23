@@ -14,6 +14,9 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # ensures -std=c++xx instead of -std=g++xx for protability purposes
     set(CMAKE_CXX_EXTENSIONS OFF)
 
+    # ensures C++ 17 is the standard
+    set (CMAKE_CXX_STANDARD 17)
+
     # exports compile commands
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
