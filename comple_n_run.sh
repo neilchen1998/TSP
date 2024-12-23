@@ -57,7 +57,7 @@ while getopts ":tdrmh:" option; do
     esac
 done
 
-configure_and_build
+configure_and_build &&
 
 if [[ "$BUILD_TYPE" == "Test" ]]; then
     run_test_cases
