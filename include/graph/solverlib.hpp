@@ -2,6 +2,7 @@
 #define INCLUDE_GRAPH_SOLVERLIB_H_
 
 #include <vector>   // std::vector
+#include <optional> // std::optional
 
 #include <boost/dynamic_bitset.hpp> // boost::dynamic_bitset
 
