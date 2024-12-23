@@ -19,7 +19,7 @@ TEST_CASE("Brute Force", "[main]")
             {6, 5, -4, 0},
         };
         auto ans = graph::solver::brute_force(graph);
-        REQUIRE (ans == 9);
+        CHECK (ans == 9);
     }
 }
 
@@ -111,7 +111,7 @@ TEST_CASE("Find an unvisited node", "[main]")
         const size_t ans = 3;
         boost::dynamic_bitset<> visited(5, 0b00111);
         auto ret = graph::find_unvisited_node(visited).value_or(0);
-        REQUIRE (ret == ans);
+        CHECK (ret == ans);
     }
 
     SECTION ("No unvisited node", "[main]")
@@ -119,6 +119,6 @@ TEST_CASE("Find an unvisited node", "[main]")
         boost::dynamic_bitset<> visited(10, 0b1111111111);
         auto ret = graph::find_unvisited_node(visited);
         auto ans = (ret == std::nullopt) ? true : false;
-        REQUIRE (ans);
+        CHECK (ans);
     }
 }
