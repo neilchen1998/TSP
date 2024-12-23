@@ -7,7 +7,7 @@
 
 #include "filesystem/loadlib.hpp"
 #include "math/mathlib.hpp"     // distance
-#include "graph/nodelib.hpp"    // graph::Node
+#include "graph/nodelib.hpp"    // graph::Coordinate
 #include "constant/constantlib.hpp"     // constants::INF
 
 void read_file_line_by_line(const std::string& filename)
@@ -34,12 +34,12 @@ void read_file_line_by_line(const std::string& filename)
     }
 }
 
-std::vector<graph::Node> get_nodes_from_file(const std::string& filename)
+std::vector<graph::Coordinate> get_nodes_from_file(const std::string& filename)
 {
     std::ifstream file(filename);
     std::string str;
     std::size_t num = 0;
-    std::vector<graph::Node> nodes;
+    std::vector<graph::Coordinate> nodes;
 
     // checks if the file exists
     if (!file.is_open())
@@ -91,7 +91,7 @@ std::vector<graph::Node> get_nodes_from_file(const std::string& filename)
     return nodes;
 }
 
-std::vector<std::vector<double>> create_graph(const std::vector<graph::Node>& nodes)
+std::vector<std::vector<double>> create_graph(const std::vector<graph::Coordinate>& nodes)
 {
     const size_t N = nodes.size();
     std::vector<std::vector<double>> graph(N, std::vector<double>(N, constants::INF));

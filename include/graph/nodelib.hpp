@@ -3,7 +3,7 @@
 
 namespace graph
 {
-    struct Node
+    struct Coordinate
     {
         double x;
         double y;
