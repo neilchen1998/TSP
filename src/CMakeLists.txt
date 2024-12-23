@@ -16,6 +16,4 @@ target_include_directories(graph_library PUBLIC ../include)
 target_link_libraries(math_library PUBLIC Boost::boost)
 target_link_libraries(graph_library PUBLIC Boost::boost math_library)
 
-target_compile_features(math_library PUBLIC cxx_std_17)  # requires C+17 for inline variables
-target_compile_features(filesystem_library PUBLIC cxx_std_11)
-target_compile_features(graph_library PUBLIC cxx_std_17)
+target_compile_features(graph_library PUBLIC cxx_std_23)  # requires C+23 for std::print
