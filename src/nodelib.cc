@@ -1,18 +1,21 @@
 #include "graph/nodelib.hpp"
 
 #include <vector>   // std::vector
+#include <iostream>
 
 #include <boost/dynamic_bitset.hpp> // boost::dynamic_bitset
 
 #include "constant/constantlib.hpp"     // constants::INF
 
-graph::Node::Node()
+graph::Node::Node(size_t N)
 {
     startIdx = 0;
     parentIdx = 0;
     curIdx = 0;
     isLeaf = true;
     cost = constants::INF;
+    visited.resize(N);
+    visited.reset();
 }
 
 graph::Node::Node(size_t startIdx, size_t parentIdx, size_t curIdx, boost::dynamic_bitset<> visitedParent) :
@@ -35,4 +38,9 @@ graph::Node::~Node()
 double graph::Node::GetCost() const
 {
     return this->cost;
+}
+
+bool graph::Node::IsCompleted() const
+{
+    return this->visited.all();
 }

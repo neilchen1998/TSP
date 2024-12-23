@@ -17,11 +17,13 @@ namespace graph
     class Node
     {
     public:
-        Node();
+        Node(size_t N);
         Node(size_t startIdx, size_t parentIdx, size_t curIdx, boost::dynamic_bitset<> visited);
         ~Node();
 
         double GetCost() const;
+
+        bool IsCompleted() const;
 
     private:
         size_t startIdx;

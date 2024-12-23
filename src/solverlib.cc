@@ -84,8 +84,10 @@ double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &g
 {
     double ret = constants::INF;
 
+    const size_t N = graph.size();
+
     // creates the start node
-    Node start = graph::Node();
+    Node start = graph::Node(N);
     auto cmp = [](const graph::Node& lhs, const graph::Node& rhs) { return lhs.GetCost() > rhs.GetCost(); };
     std::priority_queue<graph::Node, std::vector<graph::Node>, decltype(cmp)> pq(cmp);
 
