@@ -7,7 +7,7 @@
 #include "constant/constantlib.hpp"     // constants::INF
 #include "graph/visualizerlib.hpp"
 
-double graph::brute_force(const std::vector<std::vector<double>> &graph)
+double graph::solver::brute_force(const std::vector<std::vector<double>> &graph)
 {
     const size_t N = graph.size();
 
