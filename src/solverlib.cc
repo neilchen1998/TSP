@@ -83,16 +83,57 @@ std::optional<size_t> graph::find_unvisited_node(const boost::dynamic_bitset<>& 
 
 double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &graph)
 {
-    double ret = constants::INF;
-
     const size_t N = graph.size();
+    unsigned long int cnt = 0;
 
     // creates the start node
-    Node start = graph::Node(N);
+    Node start = graph::Node(N, graph);
     auto cmp = [](const graph::Node& lhs, const graph::Node& rhs) { return lhs.GetCost() > rhs.GetCost(); };
     std::priority_queue<graph::Node, std::vector<graph::Node>, decltype(cmp)> pq(cmp);
 
     pq.push(start);
+    while (!pq.empty() && !pq.top().IsCompleted())
+    {
+        if (cnt > 999)
+        {
+            std::cerr << "Error: Timeout!" << std::endl;
+            return constants::INF;
+        }
 
+        auto curNode = pq.top();
+        boost::dynamic_bitset<> curVisited = curNode.GetVisited();
+        auto curGraph = curNode.GetGraph();
+        size_t curIdx = curNode.GetCurrentIdx();
+
+        std::print("*** # {}: Node: {} ***\n", cnt, curIdx);
+        graph::print_graph(curGraph);
+        std::cout << "visited: " << curVisited << std::endl;
+        std::print("cost: {}", curNode.GetCost());
+        std::cout << "\n";
+
+        for (boost::dynamic_bitset<>::size_type i = 0; i < N; ++i)
+        {
+            size_t nextIdx = (curIdx + i) % N;
+            if (curVisited[nextIdx] == 0)
+            {
+                boost::dynamic_bitset<> curVisited = curNode.GetVisited();
+                auto [nextGraph, nextCost] = graph::explore_new_node(curGraph, curIdx, nextIdx, 0);
+                auto nextNode = graph::Node(curIdx, nextIdx, curVisited, std::move(nextGraph), nextCost);
+
+                pq.push(nextNode);
+                ++cnt;
+            }
+        }
+
+        pq.pop();
+    }
+
+    if (pq.empty())
+    {
+        std::cerr << "A path can not be found!" << std::endl;
+        return constants::INF;
+    }
+
+    // returns the cost of the top node
     return pq.top().GetCost();
 }

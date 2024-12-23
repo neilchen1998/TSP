@@ -85,7 +85,7 @@ TEST_CASE("Branch and Bound", "[main]")
             {19, 6, 18, constants::INF, 3},
             {16, 4, 7, 16, constants::INF}
         };
-        const double ans_cost = constants::INF;
+        const double ans_cost = 28;
         double ret_cost = graph::solver::branch_and_bound(graph);
         REQUIRE (ret_cost == ans_cost);
     }
