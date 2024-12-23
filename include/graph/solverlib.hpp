@@ -19,7 +19,7 @@ namespace graph
     /// @param start The start index
     /// @param goal The goal index
     /// @return {the goal graph, the cost}
-    std::tuple< std::vector<std::vector<double>>, double> explore_new_node(const std::vector<std::vector<double>> &graph, const size_t start, const size_t goal);
+    std::tuple< std::vector<std::vector<double>>, double> explore_new_node(const std::vector<std::vector<double>> &graph, const size_t from, const size_t to, const size_t start = 0);
 
     /// @brief Find an unvisited node
     /// @param visited The bitset that entails all visited nodes

@@ -44,8 +44,8 @@ TEST_CASE("Branch and Bound", "[main]")
             {15, constants::INF, 12, constants::INF, 0},
             {11, constants::INF, 0, 12, constants::INF}
         };
-        const size_t start = 0, goal = 1;
-        auto [ret_graph, ret_val] = graph::explore_new_node(graph, start, goal);
+        const size_t from = 0, to = 1;
+        auto [ret_graph, ret_val] = graph::explore_new_node(graph, from, to, from);
         REQUIRE (ret_val == ans_val);
         REQUIRE (ret_graph == ans_graph);
     }
@@ -69,8 +69,8 @@ TEST_CASE("Branch and Bound", "[main]")
             {4, 3, constants::INF, constants::INF, 0},
             {0, 0, constants::INF, 12, constants::INF}
         };
-        const size_t start = 0, goal = 2;
-        auto [ret_graph, ret_val] = graph::explore_new_node(graph, start, goal);
+        const size_t from = 0, to = 2;
+        auto [ret_graph, ret_val] = graph::explore_new_node(graph, from, to);
         REQUIRE (ret_val == ans_val);
         REQUIRE (ret_graph == ans_graph);
     }

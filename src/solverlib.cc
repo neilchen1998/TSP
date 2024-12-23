@@ -43,14 +43,14 @@ double graph::solver::brute_force(const std::vector<std::vector<double>> &graph)
     return ret;
 }
 
-std::tuple< std::vector<std::vector<double>>, double> graph::explore_new_node(const std::vector<std::vector<double>> &graph, const size_t start, const size_t end)
+std::tuple< std::vector<std::vector<double>>, double> graph::explore_new_node(const std::vector<std::vector<double>> &graph, const size_t from, const size_t to, const size_t start)
 {
     double ret = constants::INF;
 
     auto [curGraph, curReducedVal] = reduce_graph(graph);
-    double curCost = curGraph[start][end]; // get the cost from node A to node B
-    curGraph[end][start] = constants::INF; // makes the weight from the next node to the previous node inf
-    set_row_col_inf(curGraph, start, end);
+    double curCost = curGraph[from][to]; // get the cost from node A to node B
+    curGraph[to][start] = constants::INF; // makes the weight from the next node to the previous node inf
+    set_row_col_inf(curGraph, from, to);
     auto [nextGraph, nextReducedVal] = reduce_graph(curGraph);
 
     ret = curCost + curReducedVal + nextReducedVal;
