@@ -3,11 +3,13 @@
 #include <vector>   // std::vector
 #include <iostream> // std::cout
 #include <optional> // std::optional
+#include <queue>    // std::priority_queue
 
 #include <boost/dynamic_bitset.hpp> // boost::dynamic_bitset
 #include "math/mathlib.hpp"
 #include "constant/constantlib.hpp"     // constants::INF
 #include "graph/visualizerlib.hpp"
+#include "graph/nodelib.hpp"            // graph::Node
 
 double graph::solver::brute_force(const std::vector<std::vector<double>> &graph)
 {
@@ -82,5 +84,12 @@ double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &g
 {
     double ret = constants::INF;
 
-    return ret;
+    // creates the start node
+    Node start = graph::Node();
+    auto cmp = [](const graph::Node& lhs, const graph::Node& rhs) { return lhs.GetCost() > rhs.GetCost(); };
+    std::priority_queue<graph::Node, std::vector<graph::Node>, decltype(cmp)> pq(cmp);
+
+    pq.push(start);
+
+    return pq.top().GetCost();
 }
