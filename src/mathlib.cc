@@ -2,7 +2,6 @@
 #include <algorithm>    // std::prev_permutation, std::min_element
 #include <iostream>     // std::cout
 #include <string>       // std::string
-#include <limits>       // constants::INF
 #include <tuple>        // std::tuple
 #include <numeric>      // std::reduce
 
