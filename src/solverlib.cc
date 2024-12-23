@@ -2,7 +2,9 @@
 
 #include <vector>   // std::vector
 #include <iostream> // std::cout
+#include <optional> // std::optional
 
+#include <boost/dynamic_bitset.hpp> // boost::dynamic_bitset
 #include "math/mathlib.hpp"
 #include "constant/constantlib.hpp"     // constants::INF
 #include "graph/visualizerlib.hpp"
@@ -54,5 +56,25 @@ std::tuple< std::vector<std::vector<double>>, double> graph::explore_new_node(co
     ret = curCost + curReducedVal + nextReducedVal;
 
     return {nextGraph, ret};
+}
+
+std::optional<size_t> graph::find_unvisited_node(const boost::dynamic_bitset<>& visited)
+{
+    #if DEBUG
+    std::cout << "visited: " << visited << std::endl;
+    #endif
+
+    // loops through the bitset from the most unsignificant bit
+    for (boost::dynamic_bitset<>::size_type i = 0; i < visited.size(); ++i)
+    {
+        if (visited[i] == 0)
+        {
+            return (size_t)i;
+        }
+    }
+
+    // we cannot find an unvisited node
+    // all nodes are visited
+    return std::nullopt;
 }
 

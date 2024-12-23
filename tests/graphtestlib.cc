@@ -75,3 +75,22 @@ TEST_CASE("Branch and Bound", "[main]")
         REQUIRE (ret_graph == ans_graph);
     }
 }
+
+TEST_CASE("Find an unvisited node", "[main]")
+{
+    SECTION ("At least one unvisited node", "[main]")
+    {
+        const size_t ans = 3;
+        boost::dynamic_bitset<> visited(5, 0b00111);
+        auto ret = graph::find_unvisited_node(visited).value_or(0);
+        REQUIRE (ret == ans);
+    }
+
+    SECTION ("No unvisited node", "[main]")
+    {
+        boost::dynamic_bitset<> visited(10, 0b1111111111);
+        auto ret = graph::find_unvisited_node(visited);
+        auto ans = (ret == std::nullopt) ? true : false;
+        REQUIRE (ans);
+    }
+}
