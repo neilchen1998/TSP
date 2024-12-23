@@ -78,3 +78,9 @@ std::optional<size_t> graph::find_unvisited_node(const boost::dynamic_bitset<>& 
     return std::nullopt;
 }
 
+double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &graph)
+{
+    double ret = constants::INF;
+
+    return ret;
+}
