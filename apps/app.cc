@@ -1,5 +1,6 @@
 #include <iostream> // std::cout, std::endl
 #include <stdlib.h> // EXIT_SUCCESS, EXIT_FAILURE
+#include <print>    // std::println
 
 #include "math/mathlib.hpp"
 #include "filesystem/loadlib.hpp"
@@ -21,7 +22,7 @@ int main(int argc, char* argv[])
     }
 
     graph::print_path(path, "Path");
-    std::print("Cost: {}\n", cost);
+    std::println("Cost: {:.3f}", cost); // a precision of 2 decimal places
 
     return EXIT_SUCCESS;
 }
