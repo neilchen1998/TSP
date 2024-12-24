@@ -99,7 +99,7 @@ double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &g
     // finds the optimal journey
     while (!pq.empty())
     {
-        if (cnt > 99)
+        if (cnt > 999)
         {
             std::cerr << "Error: Timeout!" << std::endl;
             return constants::INF;
