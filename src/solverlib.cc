@@ -5,6 +5,7 @@
 #include <optional> // std::optional
 #include <queue>    // std::priority_queue
 #include <print>    // std::print
+#include <string>   // std::string
 
 #include <boost/dynamic_bitset.hpp> // boost::dynamic_bitset
 #include "math/mathlib.hpp"
@@ -81,7 +82,7 @@ std::optional<size_t> graph::find_unvisited_node(const boost::dynamic_bitset<>& 
     return std::nullopt;
 }
 
-double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &graph)
+std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const std::vector<std::vector<double>> &graph)
 {
     // gets the size of the graph
     const size_t N = graph.size();
@@ -96,10 +97,7 @@ double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &g
     // creates the start node
     {
         auto [curGraph, curCost] = reduce_graph(graph);
-        boost::dynamic_bitset<> visited(N);
-        visited.reset();
-        visited[0] = 1;
-        Node start = graph::Node(-1, 0, visited, std::move(curGraph), curCost);
+        Node start = graph::Node(std::move(curGraph), curCost);
         pq.push(start);
     }
 
@@ -113,7 +111,7 @@ double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &g
         if (cnt > 999)
         {
             std::cerr << "Error: Timeout!" << std::endl;
-            return constants::INF;
+            return {{}, constants::INF};
         }
         #endif
 
@@ -128,8 +126,8 @@ double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &g
         std::print("*** # {}: Node: {} Parent: {} ***\n", cnt, curIdx, parentIdx);
         graph::print_graph(curGraph);
         std::cout << "visited: " << curVisited << std::endl;
-        std::print("cost: {}", curCost);
-        std::cout << "\n";
+        std::print("cost: {}\n", curCost);
+        curNode.PrintPath();
         #endif
 
         for (size_t nextIdx = 0; nextIdx < N; ++nextIdx)
@@ -143,7 +141,7 @@ double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &g
 
                 // creates a new node
                 auto [nextGraph, nextCost] = graph::explore_new_node(curGraph, curIdx, nextIdx, curCost);
-                auto nextNode = graph::Node(curIdx, nextIdx, curVisited, std::move(nextGraph), nextCost);
+                auto nextNode = graph::Node(curIdx, nextIdx, curVisited, std::move(nextGraph), nextCost, curNode.GetPath());
 
                 // push the new node to the priority queue
                 pq.push(nextNode);
@@ -160,9 +158,14 @@ double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &g
     if (pq.empty())
     {
         std::cerr << "A path can not be found!" << std::endl;
-        return constants::INF;
+        return {{}, constants::INF};
     }
 
-    // returns the cost of the top node
-    return pq.top().GetCost();
+    #if DEBUG
+    std::cout << "Path:\t";
+    pq.top().PrintPath();
+    #endif
+
+    // returns the path and the cost of the top node
+    return {pq.top().GetPath(), pq.top().GetCost()};
 }

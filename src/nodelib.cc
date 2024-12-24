@@ -1,42 +1,46 @@
 #include "graph/nodelib.hpp"
 
-#include <vector>   // std::vector
-#include <iostream> // std::cout
-#include <optional> // std::optional
+#include <vector>       // std::vector
+#include <iostream>     // std::cout
+#include <optional>     // std::optional
+#include <algorithm>    // std::ranges::copy
+#include <iterator>     // std::ostream_iterator
 
 #include <boost/dynamic_bitset.hpp> // boost::dynamic_bitset
 
 #include "constant/constantlib.hpp"     // constants::INF
 #include "graph/nodelib.hpp"
 
-graph::Node::Node(size_t N, std::vector<std::vector<double>> graph) : graph(graph)
+graph::Node::Node(std::vector<std::vector<double>>&& curGraph, double curCost) :
+    startIdx(0),
+    parentIdx(-1),
+    curIdx(0),
+    graph(std::move(curGraph)),
+    cost(curCost)
 {
-    startIdx = 0;
-    parentIdx = 0;
-    curIdx = 0;
-    isLeaf = true;
-    cost = constants::INF;
-    visited.resize(N);
+    // creates a visited list and marks the start node as visited
+    visited.resize(this->graph.size());
     visited.reset();
-    visited[0] = 1;
+    visited[curIdx] = 1;
+
+    // pushes the current node to the path
+    path.push_back(curIdx);
 }
 
-graph::Node::Node(size_t parentIdx, size_t childIdx, boost::dynamic_bitset<> visitedParent, std::vector<std::vector<double>>&& graph, double cost, size_t startIdx) :
+graph::Node::Node(size_t parentIdx, size_t childIdx, boost::dynamic_bitset<> visitedParent, std::vector<std::vector<double>>&& graph, double cost, const std::vector<size_t>& parentPath, size_t startIdx) :
     startIdx(startIdx),
     parentIdx(parentIdx),
     curIdx(childIdx),
     graph(std::move(graph)),
     cost(cost)
 {
-    isLeaf = true;
-
+    // gets the visited list and marks the current node as visited
     visited = visitedParent;
-    visited[childIdx] = 1;
-}
+    visited[curIdx] = 1;
 
-graph::Node::~Node()
-{
-
+    // gets the path from the parent and adds the current node to the path
+    path = parentPath;
+    path.push_back(curIdx);
 }
 
 double graph::Node::GetCost() const
@@ -78,4 +82,15 @@ boost::dynamic_bitset<> graph::Node::GetVisited() const
 std::tuple<size_t, size_t> graph::Node::GetIndexes() const
 {
     return {this->curIdx, this->parentIdx};
+}
+
+std::vector<size_t> graph::Node::GetPath() const
+{
+    return this->path;
+}
+
+void graph::Node::PrintPath() const
+{
+    std::ranges::copy(path, std::ostream_iterator<size_t>(std::cout, " "));
+    std::cout << "\n";
 }

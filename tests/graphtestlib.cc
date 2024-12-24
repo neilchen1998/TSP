@@ -112,8 +112,10 @@ TEST_CASE("Branch and Bound", "[main]")
             {4, 1, constants::INF, 2},
             {6, 5, -4, constants::INF},
         };
+        const std::vector<size_t> ans_path = {0, 3, 2, 1};
         const double ans_cost = 9;
-        double ret_cost = graph::solver::branch_and_bound(graph);
+        auto [ret_path, ret_cost] = graph::solver::branch_and_bound(graph);
+        CHECK (ret_path == ans_path);
         CHECK (ret_cost == ans_cost);
     }
 
@@ -127,8 +129,10 @@ TEST_CASE("Branch and Bound", "[main]")
             {19, 6, 18, constants::INF, 3},
             {16, 4, 7, 16, constants::INF}
         };
+        const std::vector<size_t> ans_path = {0, 3, 1, 4, 2};
         const double ans_cost = 28;
-        double ret_cost = graph::solver::branch_and_bound(graph);
+        auto [ret_path, ret_cost] = graph::solver::branch_and_bound(graph);
+        CHECK (ret_path == ans_path);
         CHECK (ret_cost == ans_cost);
     }
 }

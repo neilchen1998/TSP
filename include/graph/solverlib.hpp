@@ -12,7 +12,7 @@ namespace graph
     {
         double brute_force(const std::vector<std::vector<double>>& graph);
 
-        double branch_and_bound(const std::vector<std::vector<double>> &graph);
+        std::tuple<std::vector<size_t>, double> branch_and_bound(const std::vector<std::vector<double>> &graph);
     };  // namespace solver
 
     /// @brief Explore a new node in the branch and bound algorithm

@@ -16,4 +16,4 @@ target_include_directories(graph_library PUBLIC ../include)
 target_link_libraries(math_library PUBLIC Boost::boost)
 target_link_libraries(graph_library PUBLIC Boost::boost math_library)
 
-target_compile_features(graph_library PUBLIC cxx_std_23)  # requires C+23 for std::print
+target_compile_features(graph_library PUBLIC cxx_std_23)  # requires C+23 for std::print, std::ranges::copy

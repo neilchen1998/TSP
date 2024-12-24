@@ -19,9 +19,9 @@ namespace graph
     class Node
     {
     public:
-        Node(size_t N, std::vector<std::vector<double>> graph);
-        Node(size_t parentIdx, size_t childIdx, boost::dynamic_bitset<> visitedParent, std::vector<std::vector<double>>&& graph, double cost, size_t startIdx = 0);
-        ~Node();
+        Node(std::vector<std::vector<double>>&& graph, double cost);
+        Node(size_t parentIdx, size_t childIdx, boost::dynamic_bitset<> visitedParent, std::vector<std::vector<double>>&& graph, double cost, const std::vector<size_t>& parentPath, size_t startIdx = 0);
+        ~Node() = default;
 
         double GetCost() const;
 
@@ -35,14 +35,18 @@ namespace graph
 
         std::tuple<size_t, size_t> GetIndexes() const;
 
+        std::vector<size_t> GetPath() const;
+
+        void PrintPath() const;
+
     private:
         size_t startIdx;
         size_t parentIdx;
         size_t curIdx;
         boost::dynamic_bitset<> visited;
         std::vector<std::vector<double>> graph;
-        bool isLeaf;
         double cost;
+        std::vector<size_t> path;
     };
 
 };  // namespace graph
