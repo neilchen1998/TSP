@@ -83,62 +83,80 @@ std::optional<size_t> graph::find_unvisited_node(const boost::dynamic_bitset<>& 
 
 double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &graph)
 {
+    // gets the size of the graph
     const size_t N = graph.size();
+
+    // creates a min priority queue
     auto cmp = [](const graph::Node& lhs, const graph::Node& rhs) { return lhs.GetCost() > rhs.GetCost(); };
     std::priority_queue<graph::Node, std::vector<graph::Node>, decltype(cmp)> pq(cmp);
+
+    // the unique ID of the node instance
     unsigned long int cnt = 0;
 
     // creates the start node
-    auto [curGraph, curCost] = reduce_graph(graph);
-    boost::dynamic_bitset<> visited(N);
-    visited.reset();
-    visited[0] = 1;
-    Node start = graph::Node(-1, 0, visited, std::move(curGraph), curCost);
-    pq.push(start);
+    {
+        auto [curGraph, curCost] = reduce_graph(graph);
+        boost::dynamic_bitset<> visited(N);
+        visited.reset();
+        visited[0] = 1;
+        Node start = graph::Node(-1, 0, visited, std::move(curGraph), curCost);
+        pq.push(start);
+    }
 
     // finds the optimal journey
-    while (!pq.empty())
+    // only stops when either:
+    // i. the priority queue is empty
+    // ii. the top node has travelled all the nodes
+    while (!pq.empty() && !pq.top().IsCompleted())
     {
+        #if DEBUG
         if (cnt > 999)
         {
             std::cerr << "Error: Timeout!" << std::endl;
             return constants::INF;
         }
+        #endif
 
+        // get the node from the top of the priority queue (the node that has the least cost)
         auto curNode = pq.top();
-
-        // checks if we have visited every all the nodes
-        if (curNode.IsCompleted())
-        {
-            break;
-        }
         boost::dynamic_bitset<> curVisited = curNode.GetVisited();
         auto curGraph = curNode.GetGraph();
         auto [curIdx, parentIdx] = curNode.GetIndexes();
+        auto curCost = curNode.GetCost();
 
+        #if DEBUG
         std::print("*** # {}: Node: {} Parent: {} ***\n", cnt, curIdx, parentIdx);
         graph::print_graph(curGraph);
         std::cout << "visited: " << curVisited << std::endl;
-        auto c = curNode.GetCost();
-        std::print("cost: {}", c);
+        std::print("cost: {}", curCost);
         std::cout << "\n";
+        #endif
 
-        for (int nextIdx = 0; nextIdx < N; ++nextIdx)
+        for (size_t nextIdx = 0; nextIdx < N; ++nextIdx)
         {
+            // only explores an unvisited node
             if (!curVisited[nextIdx])
             {
+                #if DEBUG
                 std::print("curIdx: {} nextIdx: {}\n", curIdx, nextIdx);
-                auto [nextGraph, nextCost] = graph::explore_new_node(curGraph, curIdx, nextIdx, c);
+                #endif
+
+                // creates a new node
+                auto [nextGraph, nextCost] = graph::explore_new_node(curGraph, curIdx, nextIdx, curCost);
                 auto nextNode = graph::Node(curIdx, nextIdx, curVisited, std::move(nextGraph), nextCost);
 
+                // push the new node to the priority queue
                 pq.push(nextNode);
                 ++cnt;
             }
         }
 
+        // pops the current node
         pq.pop();
     }
 
+    // checks if the priority queue is empty
+    // if so that indicates a path cannot be found
     if (pq.empty())
     {
         std::cerr << "A path can not be found!" << std::endl;
