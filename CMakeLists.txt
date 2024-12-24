@@ -20,6 +20,12 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # exports compile commands
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+    # displays the project source directory
+    # message(STATUS "Project Source Directory: ${PROJECT_SOURCE_DIR}")
+
+    # for the IDEs
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
     # compiler flags
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         add_compile_options(-Wall -Wextra -pedantic -g3 -fsanitize=address,undefined)
