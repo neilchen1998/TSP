@@ -21,17 +21,17 @@ graph::Node::Node(size_t N, std::vector<std::vector<double>> graph) : graph(grap
     visited[0] = 1;
 }
 
-graph::Node::Node(size_t parentIdx, size_t curIdx, boost::dynamic_bitset<> visitedParent, std::vector<std::vector<double>>&& graph, double cost, size_t startIdx) :
+graph::Node::Node(size_t parentIdx, size_t childIdx, boost::dynamic_bitset<> visitedParent, std::vector<std::vector<double>>&& graph, double cost, size_t startIdx) :
     startIdx(startIdx),
     parentIdx(parentIdx),
-    curIdx(curIdx),
+    curIdx(childIdx),
     graph(std::move(graph)),
     cost(cost)
 {
     isLeaf = true;
 
     visited = visitedParent;
-    visited[curIdx] = 1;
+    visited[childIdx] = 1;
 }
 
 graph::Node::~Node()
@@ -75,7 +75,7 @@ boost::dynamic_bitset<> graph::Node::GetVisited() const
     return this->visited;
 }
 
-size_t graph::Node::GetCurrentIdx() const
+std::tuple<size_t, size_t> graph::Node::GetIndexes() const
 {
-    return this->curIdx;
+    return {this->curIdx, this->parentIdx};
 }

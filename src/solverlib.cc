@@ -103,9 +103,9 @@ double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &g
         auto curNode = pq.top();
         boost::dynamic_bitset<> curVisited = curNode.GetVisited();
         auto curGraph = curNode.GetGraph();
-        size_t curIdx = curNode.GetCurrentIdx();
+        auto [curIdx, parentIdx] = curNode.GetIndexes();
 
-        std::print("*** # {}: Node: {} ***\n", cnt, curIdx);
+        std::print("*** # {}: Node: {} Parent: {} ***\n", cnt, curIdx, parentIdx);
         graph::print_graph(curGraph);
         std::cout << "visited: " << curVisited << std::endl;
         std::print("cost: {}", curNode.GetCost());
@@ -116,8 +116,8 @@ double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &g
             size_t nextIdx = (curIdx + i) % N;
             if (curVisited[nextIdx] == 0)
             {
-                boost::dynamic_bitset<> curVisited = curNode.GetVisited();
-                auto [nextGraph, nextCost] = graph::explore_new_node(curGraph, curIdx, nextIdx, 0);
+                // std::print("curIdx: {} nextIdx: {}\n", curIdx, nextIdx);
+                auto [nextGraph, nextCost] = graph::explore_new_node(curGraph, curIdx, nextIdx, curCost);
                 auto nextNode = graph::Node(curIdx, nextIdx, curVisited, std::move(nextGraph), nextCost);
 
                 pq.push(nextNode);

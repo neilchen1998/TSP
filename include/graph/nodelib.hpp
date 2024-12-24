@@ -20,7 +20,7 @@ namespace graph
     {
     public:
         Node(size_t N, std::vector<std::vector<double>> graph);
-        Node(size_t parentIdx, size_t curIdx, boost::dynamic_bitset<> visitedParent, std::vector<std::vector<double>>&& graph, double cost, size_t startIdx = 0);
+        Node(size_t parentIdx, size_t childIdx, boost::dynamic_bitset<> visitedParent, std::vector<std::vector<double>>&& graph, double cost, size_t startIdx = 0);
         ~Node();
 
         double GetCost() const;
@@ -33,7 +33,7 @@ namespace graph
 
         boost::dynamic_bitset<> GetVisited() const;
 
-        size_t GetCurrentIdx() const;
+        std::tuple<size_t, size_t> GetIndexes() const;
 
     private:
         size_t startIdx;
