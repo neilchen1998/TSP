@@ -48,7 +48,7 @@ double graph::solver::brute_force(const std::vector<std::vector<double>> &graph)
 
 std::tuple< std::vector<std::vector<double>>, double> graph::explore_new_node(const std::vector<std::vector<double>> &graph, const size_t from, const size_t to, double prevCost, const size_t start)
 {
-    double ret = constants::INF;
+    double ret;
 
     auto [curGraph, _] = reduce_graph(graph);
     double curCost = curGraph[from][to]; // get the cost from node A to node B
@@ -84,17 +84,22 @@ std::optional<size_t> graph::find_unvisited_node(const boost::dynamic_bitset<>& 
 double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &graph)
 {
     const size_t N = graph.size();
+    auto cmp = [](const graph::Node& lhs, const graph::Node& rhs) { return lhs.GetCost() > rhs.GetCost(); };
+    std::priority_queue<graph::Node, std::vector<graph::Node>, decltype(cmp)> pq(cmp);
     unsigned long int cnt = 0;
 
     // creates the start node
-    Node start = graph::Node(N, graph);
-    auto cmp = [](const graph::Node& lhs, const graph::Node& rhs) { return lhs.GetCost() > rhs.GetCost(); };
-    std::priority_queue<graph::Node, std::vector<graph::Node>, decltype(cmp)> pq(cmp);
-
+    auto [curGraph, curCost] = reduce_graph(graph);
+    boost::dynamic_bitset<> visited(N);
+    visited.reset();
+    visited[0] = 1;
+    Node start = graph::Node(-1, 0, visited, std::move(curGraph), curCost);
     pq.push(start);
-    while (!pq.empty() && !pq.top().IsCompleted())
+
+    // finds the optimal journey
+    while (!pq.empty())
     {
-        if (cnt > 999)
+        if (cnt > 99)
         {
             std::cerr << "Error: Timeout!" << std::endl;
             return constants::INF;
@@ -108,16 +113,16 @@ double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &g
         std::print("*** # {}: Node: {} Parent: {} ***\n", cnt, curIdx, parentIdx);
         graph::print_graph(curGraph);
         std::cout << "visited: " << curVisited << std::endl;
-        std::print("cost: {}", curNode.GetCost());
+        auto c = curNode.GetCost();
+        std::print("cost: {}", c);
         std::cout << "\n";
 
-        for (boost::dynamic_bitset<>::size_type i = 0; i < N; ++i)
+        for (int nextIdx = 0; nextIdx < N; ++nextIdx)
         {
-            size_t nextIdx = (curIdx + i) % N;
-            if (curVisited[nextIdx] == 0)
+            if (!curVisited[nextIdx])
             {
-                // std::print("curIdx: {} nextIdx: {}\n", curIdx, nextIdx);
-                auto [nextGraph, nextCost] = graph::explore_new_node(curGraph, curIdx, nextIdx, curCost);
+                std::print("curIdx: {} nextIdx: {}\n", curIdx, nextIdx);
+                auto [nextGraph, nextCost] = graph::explore_new_node(curGraph, curIdx, nextIdx, c);
                 auto nextNode = graph::Node(curIdx, nextIdx, curVisited, std::move(nextGraph), nextCost);
 
                 pq.push(nextNode);

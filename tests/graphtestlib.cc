@@ -102,6 +102,21 @@ TEST_CASE("Branch and Bound", "[main]")
         CHECK (ret_val == ans_val);
         CHECK (ret_graph == ans_graph);
     }
+
+    SECTION ("Solver", "[main]")
+    {
+        const std::vector<std::vector<double>> graph =
+        {
+            {constants::INF, 20, 30, 10, 11},
+            {15, constants::INF, 16, 4, 2},
+            {3, 5, constants::INF, 2, 4},
+            {19, 6, 18, constants::INF, 3},
+            {16, 4, 7, 16, constants::INF}
+        };
+        const double ans_cost = 28;
+        double ret_cost = graph::solver::branch_and_bound(graph);
+        CHECK (ret_cost == ans_cost);
+    }
 }
 
 TEST_CASE("Find an unvisited node", "[main]")
