@@ -106,6 +106,12 @@ double graph::solver::branch_and_bound(const std::vector<std::vector<double>> &g
         }
 
         auto curNode = pq.top();
+
+        // checks if we have visited every all the nodes
+        if (curNode.IsCompleted())
+        {
+            break;
+        }
         boost::dynamic_bitset<> curVisited = curNode.GetVisited();
         auto curGraph = curNode.GetGraph();
         auto [curIdx, parentIdx] = curNode.GetIndexes();
