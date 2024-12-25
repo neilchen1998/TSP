@@ -5,8 +5,6 @@
 #include <string>   // std::string
 #include <vector>   // std::vector
 #include <tuple>    // std::tie
-#include <filesystem>   // fs::path
-#include <format>       // std::format
 
 #include <boost/program_options.hpp>    // boost::program_options
 
@@ -16,7 +14,6 @@
 #include "constant/constantlib.hpp"
 
 namespace po = boost::program_options;
-namespace fs = std::filesystem;
 
 int main(int argc, char* argv[])
 {
@@ -24,9 +21,6 @@ int main(int argc, char* argv[])
     std::string input;
     std::string filename;
     std::string solver;
-
-    fs::path curPath = fs::current_path();
-    std::string defaultFilename("/data/demo.txt");
 
     // cretes options
     po::options_description desc("Options:");

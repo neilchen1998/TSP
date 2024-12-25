@@ -9,7 +9,11 @@
 
 #include "math/mathlib.hpp"
 #include "constant/constantlib.hpp"     // constants::INF
+
+
+#if DEBUG
 #include "graph/visualizerlib.hpp"
+#endif
 
 double distance(double x1, double y1, double x2, double y2)
 {
@@ -45,7 +49,7 @@ std::vector<std::string> generate_permutation(int N)
         ret[i] = s;
         ++i;
     } while (std::next_permutation(s.begin(), s.end()));
-    
+
     return ret;
 }
 

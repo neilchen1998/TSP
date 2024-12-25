@@ -8,7 +8,6 @@
 
 #include <boost/dynamic_bitset.hpp> // boost::dynamic_bitset
 
-#include "constant/constantlib.hpp"     // constants::INF
 #include "graph/nodelib.hpp"
 
 graph::Node::Node(std::vector<std::vector<double>>&& curGraph, double curCost) :

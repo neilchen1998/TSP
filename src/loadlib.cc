@@ -3,11 +3,10 @@
 #include <iostream> // std::cerr, std::cout
 #include <vector>   // std::vector
 #include <sstream>  // std::istringstream
-#include <limits>   // std::numeric_limits<double>::max()
 
 #include "filesystem/loadlib.hpp"
-#include "math/mathlib.hpp"     // distance
-#include "graph/nodelib.hpp"    // graph::Coordinate
+#include "math/mathlib.hpp"             // distance
+#include "graph/nodelib.hpp"            // graph::Coordinate
 #include "constant/constantlib.hpp"     // constants::INF
 
 void read_file_line_by_line(const std::string& filename)

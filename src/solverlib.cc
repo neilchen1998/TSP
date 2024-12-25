@@ -5,13 +5,16 @@
 #include <optional> // std::optional
 #include <queue>    // std::priority_queue
 #include <print>    // std::print
-#include <string>   // std::string
 
-#include <boost/dynamic_bitset.hpp> // boost::dynamic_bitset
+#include <boost/dynamic_bitset.hpp>     // boost::dynamic_bitset
 #include "math/mathlib.hpp"
 #include "constant/constantlib.hpp"     // constants::INF
-#include "graph/visualizerlib.hpp"
 #include "graph/nodelib.hpp"            // graph::Node
+
+#if DEBUG
+#include <string>   // std::string
+#include "graph/visualizerlib.hpp"
+#endif
 
 double graph::solver::brute_force(const std::vector<std::vector<double>> &graph)
 {
@@ -130,6 +133,7 @@ std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const st
         curNode.PrintPath();
         #endif
 
+        // explores all nodes
         for (size_t nextIdx = 0; nextIdx < N; ++nextIdx)
         {
             // only explores an unvisited node
@@ -160,11 +164,6 @@ std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const st
         std::cerr << "A path can not be found!" << std::endl;
         return {{}, constants::INF};
     }
-
-    #if DEBUG
-    std::cout << "Path:\t";
-    pq.top().PrintPath();
-    #endif
 
     // returns the path and the cost of the top node
     return {pq.top().GetPath(), pq.top().GetCost()};
