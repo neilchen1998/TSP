@@ -1,19 +1,92 @@
+#include <cstdlib>
 #include <iostream> // std::cout, std::endl
 #include <stdlib.h> // EXIT_SUCCESS, EXIT_FAILURE
 #include <print>    // std::println
+#include <string>   // std::string
+#include <vector>   // std::vector
+#include <tuple>    // std::tie
+#include <filesystem>   // fs::path
+#include <format>       // std::format
 
-#include "math/mathlib.hpp"
+#include <boost/program_options.hpp>    // boost::program_options
+
 #include "filesystem/loadlib.hpp"
 #include "graph/solverlib.hpp"
 #include "graph/visualizerlib.hpp"
 #include "constant/constantlib.hpp"
 
+namespace po = boost::program_options;
+namespace fs = std::filesystem;
+
 int main(int argc, char* argv[])
 {
-    std::cout << "hello, this is a travelling salesman problem!" << std::endl;
-    auto nodes = get_nodes_from_file("./data/tsp_sample.txt");
+    // variables
+    std::string input;
+    std::string filename;
+    std::string solver;
+
+    fs::path curPath = fs::current_path();
+    std::string defaultFilename("/data/demo.txt");
+
+    // cretes options
+    po::options_description desc("Options:");
+    desc.add_options()
+        ("help,h", "Display the help menu")
+        ("filename,f", po::value<std::string>(&filename)->value_name("<INPUT_FILENAME>")->default_value("./data/tsp_sample.txt"), "the input filename")
+        ("solver,s", po::value<std::string>(&solver)->value_name("<SOLVER>")->default_value("brute_force"), "the solver algorithm");
+
+    // creates the variables map and stores the inputs to the map
+    po::variables_map vm;
+
+    // makes "input" token be the positional option, i.e., token with no option name
+    po::positional_options_description p;
+    p.add("input", -1);
+
+    // checks if the user inputs are valid
+    try
+    {
+        // parses the arguments and writes the variables according to the variables map
+        po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
+        po::notify(vm);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        return EXIT_FAILURE;
+    }
+
+    // checks if the user selects --help
+    if (vm.count("help"))
+    {
+        std::cout << desc << "\n";
+        return EXIT_FAILURE;
+    }
+
+    std::println("filename: {}", filename);
+    std::println("solver: {}", solver);
+    auto nodes = get_nodes_from_file(filename);
+
+    if (nodes.empty())
+    {
+        return EXIT_FAILURE;
+    }
+
     auto graph = create_graph(nodes);
-    auto [path, cost] = graph::solver::branch_and_bound(graph);
+
+    // determines the algorithm to solve the TSP problem
+    std::vector<size_t> path;
+    double cost = constants::INF;
+    if (solver == "branch_n_bound")
+    {
+        auto ret = graph::solver::branch_and_bound(graph);
+
+        // unpacks a pair
+        std::tie(path, cost) = ret;
+    }
+    else
+    {
+        cost = graph::solver::brute_force(graph);
+    }
 
     if (cost == constants::INF)
     {
