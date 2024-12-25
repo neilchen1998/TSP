@@ -1,6 +1,7 @@
 #ifndef INCLUDE_GRAPH_SOLVERLIB_H_
 #define INCLUDE_GRAPH_SOLVERLIB_H_
 
+#include <cstddef>
 #include <vector>   // std::vector
 #include <optional> // std::optional
 
@@ -12,7 +13,10 @@ namespace graph
     {
         double brute_force(const std::vector<std::vector<double>>& graph);
 
-        std::tuple<std::vector<size_t>, double> branch_and_bound(const std::vector<std::vector<double>> &graph);
+        /// @brief Solve the TSP with Branch and Bound algorithm
+        /// @param graph The weight graph
+        /// @param maxIteration The maximum number of iterations before time-out
+        std::tuple<std::vector<size_t>, double> branch_and_bound(const std::vector<std::vector<double>> &graph, const size_t maxIteration = 9999);
     };  // namespace solver
 
     /// @brief Explore a new node in the branch and bound algorithm

@@ -85,7 +85,7 @@ std::optional<size_t> graph::find_unvisited_node(const boost::dynamic_bitset<>& 
     return std::nullopt;
 }
 
-std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const std::vector<std::vector<double>> &graph)
+std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const std::vector<std::vector<double>> &graph, const size_t maxIteration)
 {
     // gets the size of the graph
     const size_t N = graph.size();
@@ -108,16 +108,8 @@ std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const st
     // only stops when either:
     // i. the priority queue is empty
     // ii. the top node has travelled all the nodes
-    while (!pq.empty() && !pq.top().IsCompleted())
+    while (!pq.empty() && !pq.top().IsCompleted() && cnt < maxIteration)
     {
-        #if DEBUG
-        if (cnt > 999)
-        {
-            std::cerr << "Error: Timeout!" << std::endl;
-            return {{}, constants::INF};
-        }
-        #endif
-
         // get the node from the top of the priority queue (the node that has the least cost)
         auto curNode = pq.top();
         boost::dynamic_bitset<> curVisited = curNode.GetVisited();
@@ -155,6 +147,13 @@ std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const st
 
         // pops the current node
         pq.pop();
+    }
+
+    // checks if we time-out
+    if (cnt > maxIteration)
+    {
+        std::cerr << "Error: Timeout!" << std::endl;
+        return {{}, constants::INF};
     }
 
     // checks if the priority queue is empty
