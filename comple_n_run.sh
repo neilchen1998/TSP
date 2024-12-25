@@ -1,6 +1,7 @@
 #!/bin/bash
 
 BUILD_TYPE="Release"
+RUN_BINARY="Yes"
 
 # help function
 function help()
@@ -38,7 +39,7 @@ function run_test_cases()
 # gets the options
 # NOTE: the order of the argument list matters
 # in this case, '-t' will be processed first, then '-d', etc
-while getopts ":tdrmh:" option; do
+while getopts ":btdrmh:" option; do
     case $option in
         h) # display Help
             help
@@ -47,6 +48,9 @@ while getopts ":tdrmh:" option; do
             BUILD_TYPE="Debug";;
         r) # release
             BUILD_TYPE="Release";;
+        b) # build
+            BUILD_TYPE="Release"
+            RUN_BINARY="No";;
         t) # test
             BUILD_TYPE="Test";;
         m) # manual select build type
@@ -61,6 +65,6 @@ configure_and_build &&
 
 if [[ "$BUILD_TYPE" == "Test" ]]; then
     run_test_cases
-else
+elif [[ "$RUN_BINARY" == "Yes" ]]; then
     run_binary
 fi
