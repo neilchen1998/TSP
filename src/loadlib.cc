@@ -26,7 +26,7 @@ void read_file_line_by_line(const std::string& filename)
     {
         // skipping lines
     }
-    
+
     // prints out the coordinates
     while (std::getline(file, str))
     {
@@ -45,6 +45,7 @@ std::vector<graph::Coordinate> get_nodes_from_file(const std::string& filename)
     if (!file.is_open())
     {
         std::cerr << "Error: Could not open the file." << std::endl;
+        return {};
     }
 
     // skips until we reach "NODE_COORD_SECTION"
@@ -70,7 +71,7 @@ std::vector<graph::Coordinate> get_nodes_from_file(const std::string& filename)
 
     // resizes the graph
     nodes.resize(num);
-    
+
     // gets the coordinates
     int id;
     double x, y;
