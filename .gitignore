@@ -4,5 +4,8 @@ build/*
 # vscode
 .vscode/*
 
+# zed
+.cache/*
+
 # data
 data/*
