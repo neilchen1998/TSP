@@ -9,7 +9,6 @@
 #include "math/mathlib.hpp"
 #include "constant/constantlib.hpp"     // constants::INF
 
-
 #if DEBUG
 #include <iostream>     // std::cout
 #include "graph/visualizerlib.hpp"
