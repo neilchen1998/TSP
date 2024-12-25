@@ -1,6 +1,5 @@
 #include <cmath>        // square
 #include <algorithm>    // std::prev_permutation, std::min_element
-#include <iostream>     // std::cout
 #include <string>       // std::string
 #include <tuple>        // std::tuple
 #include <numeric>      // std::reduce
@@ -12,6 +11,7 @@
 
 
 #if DEBUG
+#include <iostream>     // std::cout
 #include "graph/visualizerlib.hpp"
 #endif
 
