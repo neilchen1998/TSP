@@ -1,4 +1,3 @@
-#include <cstdlib>
 #include <iostream> // std::cout, std::endl
 #include <stdlib.h> // EXIT_SUCCESS, EXIT_FAILURE
 #include <print>    // std::println
@@ -9,9 +8,9 @@
 #include <boost/program_options.hpp>    // boost::program_options
 
 #include "filesystem/loadlib.hpp"
-#include "graph/solverlib.hpp"
-#include "graph/visualizerlib.hpp"
-#include "constant/constantlib.hpp"
+#include "graph/solverlib.hpp"      // graph::solver::branch_and_bound, graph::solver::brute_force
+#include "graph/visualizerlib.hpp"  // graph::print_graph
+#include "constant/constantlib.hpp" // constants::INF
 
 namespace po = boost::program_options;
 
@@ -21,13 +20,15 @@ int main(int argc, char* argv[])
     std::string input;
     std::string filename;
     std::string solver;
+    std::string additional;
 
     // cretes options
     po::options_description desc("Options:");
     desc.add_options()
         ("help,h", "Display the help menu")
         ("filename,f", po::value<std::string>(&filename)->value_name("<INPUT_FILENAME>")->default_value("./data/tsp_sample.txt"), "the input filename")
-        ("solver,s", po::value<std::string>(&solver)->value_name("<SOLVER>")->default_value("brute_force"), "the solver algorithm");
+        ("solver,s", po::value<std::string>(&solver)->value_name("<SOLVER>")->default_value("brute_force"), "the solver algorithm")
+        ("additional,a", po::value<std::string>(&additional)->value_name("<ADDITIONAL_FUNCTIONS>")->default_value(""), "additional function");
 
     // creates the variables map and stores the inputs to the map
     po::variables_map vm;
@@ -56,6 +57,7 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
+    std::cout << "*** Travelling Salesman Problem ***" << std::endl;
     std::println("filename: {}", filename);
     std::println("solver: {}", solver);
     auto nodes = get_nodes_from_file(filename);
@@ -66,6 +68,11 @@ int main(int argc, char* argv[])
     }
 
     auto graph = create_graph(nodes);
+
+    if (additional == "print")
+    {
+        graph::print_graph(graph);
+    }
 
     // determines the algorithm to solve the TSP problem
     std::vector<size_t> path;
