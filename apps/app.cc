@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
     double cost = constants::INF;
     if (solver == "branch_n_bound")
     {
-        auto ret = graph::solver::branch_and_bound(graph);
+        auto ret = graph::solver::branch_and_bound(graph, 1000000);
 
         // unpacks a pair
         std::tie(path, cost) = ret;
