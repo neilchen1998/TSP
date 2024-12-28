@@ -8,7 +8,6 @@
 
 TEST_CASE("Brute Force", "[main]")
 {
-
     SECTION ("", "[main]")
     {
         std::vector<std::vector<double>> graph =

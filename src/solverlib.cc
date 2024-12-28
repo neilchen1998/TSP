@@ -3,7 +3,8 @@
 #include <vector>   // std::vector
 #include <iostream> // std::cout
 #include <optional> // std::optional
-#include <queue>    // std::priority_queue
+#include <deque>    // std::deque
+#include <algorithm>// std::algorithm
 #include <print>    // std::print
 
 #include <boost/dynamic_bitset.hpp>     // boost::dynamic_bitset
@@ -90,9 +91,10 @@ std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const st
     // gets the size of the graph
     const size_t N = graph.size();
 
-    // creates a min priority queue
-    auto cmp = [](const graph::Node& lhs, const graph::Node& rhs) { return lhs.GetCost() > rhs.GetCost(); };
-    std::priority_queue<graph::Node, std::vector<graph::Node>, decltype(cmp)> pq(cmp);
+    // creates a priority queue
+    // NOTE: we are accessing the front of the queue
+    auto cmp = [](const graph::Node& lhs, const graph::Node& rhs) { return lhs.GetCost() < rhs.GetCost(); };
+    std::deque<graph::Node> pq;
 
     // the unique ID of the node instance
     unsigned long int cnt = 0;
@@ -101,17 +103,17 @@ std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const st
     {
         auto [curGraph, curCost] = reduce_graph(graph);
         Node start = graph::Node(std::move(curGraph), curCost);
-        pq.push(start);
+        pq.push_back(start);
     }
 
     // finds the optimal journey
     // only stops when either:
     // i. the priority queue is empty
     // ii. the top node has travelled all the nodes
-    while (!pq.empty() && !pq.top().IsCompleted() && cnt < maxIteration)
+    while (!pq.empty() && !pq.front().IsCompleted() && cnt < maxIteration)
     {
         // get the node from the top of the priority queue (the node that has the least cost)
-        auto curNode = pq.top();
+        auto curNode = pq.front();
         boost::dynamic_bitset<> curVisited = curNode.GetVisited();
         auto curGraph = curNode.GetGraph();
         auto [curIdx, parentIdx] = curNode.GetIndexes();
@@ -122,6 +124,7 @@ std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const st
         graph::print_graph(curGraph);
         std::cout << "visited: " << curVisited << std::endl;
         std::print("cost: {}\n", curCost);
+        std::cout << "Path: ";
         curNode.PrintPath();
         #endif
 
@@ -140,13 +143,25 @@ std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const st
                 auto nextNode = graph::Node(curIdx, nextIdx, curVisited, std::move(nextGraph), nextCost, curNode.GetPath());
 
                 // push the new node to the priority queue
-                pq.push(nextNode);
+                pq.push_back(nextNode);
                 ++cnt;
             }
         }
 
         // pops the current node
-        pq.pop();
+        pq.pop_front();
+
+        // truncates the pq by removing the trailing elements
+        constexpr auto bound = 5000;
+        if (pq.size() > bound)
+        {
+            pq.erase(pq.begin() + bound, pq.end());
+        }
+
+        // only sorts the top elements
+        constexpr auto topN = 50;
+        auto m = pq.begin() + topN;
+        std::nth_element(pq.begin(), m, pq.end(), cmp);
     }
 
     // checks if we time-out
@@ -165,5 +180,5 @@ std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const st
     }
 
     // returns the path and the cost of the top node
-    return {pq.top().GetPath(), pq.top().GetCost()};
+    return {pq.front().GetPath(), pq.front().GetCost()};
 }
