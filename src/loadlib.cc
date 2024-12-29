@@ -7,7 +7,6 @@
 #include "filesystem/loadlib.hpp"
 #include "math/mathlib.hpp"             // distance
 #include "graph/nodelib.hpp"            // graph::Coordinate
-#include "constant/constantlib.hpp"     // constants::INF
 
 void read_file_line_by_line(const std::string& filename)
 {
