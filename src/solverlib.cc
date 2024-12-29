@@ -5,7 +5,7 @@
 #include <optional> // std::optional
 #include <deque>    // std::deque
 #include <algorithm>// std::algorithm
-#include <print>    // std::print
+#include <print>    // std::print, std::println
 
 #include <boost/dynamic_bitset.hpp>     // boost::dynamic_bitset
 #include "math/mathlib.hpp"
@@ -178,6 +178,10 @@ std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const st
         std::cerr << "A path can not be found!" << std::endl;
         return {{}, constants::INF};
     }
+
+    #if DEBUG
+    std::println("Number of iterations: {}", cnt);
+    #endif
 
     // returns the path and the cost of the top node
     return {pq.front().GetPath(), pq.front().GetCost()};
