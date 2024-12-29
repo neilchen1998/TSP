@@ -1,5 +1,6 @@
 #include "graph/solverlib.hpp"
 
+#include <cstddef>  // size_t
 #include <vector>   // std::vector
 #include <iostream> // std::cout
 #include <optional> // std::optional
@@ -91,6 +92,14 @@ std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const st
     // gets the size of the graph
     const size_t N = graph.size();
 
+
+    // makes the diagnol elements to be inf
+    auto weights = graph;
+    for (size_t i = 0; i < N; ++i)
+    {
+        weights[i][i] = constants::INF;
+    }
+
     // creates a priority queue
     // NOTE: we are accessing the front of the queue
     auto cmp = [](const graph::Node& lhs, const graph::Node& rhs) { return lhs.GetCost() < rhs.GetCost(); };
@@ -101,7 +110,7 @@ std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const st
 
     // creates the start node
     {
-        auto [curGraph, curCost] = reduce_graph(graph);
+        auto [curGraph, curCost] = reduce_graph(weights);
         Node start = graph::Node(std::move(curGraph), curCost);
         pq.push_back(start);
     }

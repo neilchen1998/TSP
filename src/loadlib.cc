@@ -94,7 +94,7 @@ std::vector<graph::Coordinate> get_nodes_from_file(const std::string& filename)
 std::vector<std::vector<double>> create_graph(const std::vector<graph::Coordinate>& nodes)
 {
     const size_t N = nodes.size();
-    std::vector<std::vector<double>> graph(N, std::vector<double>(N, constants::INF));
+    std::vector<std::vector<double>> graph(N, std::vector<double>(N, 0));
 
     // constructs the graph
     // 0 -> 1, 0 -> 2, 0 -> 3, ...
