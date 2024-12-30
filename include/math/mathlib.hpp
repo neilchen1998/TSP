@@ -1,10 +1,19 @@
 #ifndef INCLUDE_MATH_MATHLIB_H_
 #define INCLUDE_MATH_MATHLIB_H_
 
+#include <cstddef>  // size_t
 #include <vector>   // std::vector
-#include <string>
+#include <string>   // std::string
+
+#include "graph/nodelib.hpp"    // graph::Coordinate
 
 double distance(double x1, double y1, double x2, double y2);
+
+/// @brief Finds the distance between two coordinates
+/// @param a Coordinate A
+/// @param b Coordinate B
+/// @return The distance between the two coordinates
+double distance(const graph::Coordinate& a, const graph::Coordinate& b);
 
 std::vector<std::string> generate_permutation(int N);
 

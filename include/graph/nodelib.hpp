@@ -13,6 +13,22 @@ namespace graph
     {
         double x;
         double y;
+
+        bool operator==(const Coordinate& other) const
+        {
+            return (this->x == other.x) && (this->y == other.y);
+        }
+
+        bool operator!=(const Coordinate& other) const
+        {
+            return (this->x != other.x) || (this->y != other.y);
+        }
+
+        friend std::ostream& operator<<(std::ostream& os, const Coordinate& coord)
+        {
+            os << "(" << coord.x << ", " << coord.y << ")";
+            return os;
+        }
     };
 
     /// @brief The node used in the Branch and Bound algorithm
