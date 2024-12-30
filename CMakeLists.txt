@@ -61,6 +61,12 @@ endif()
 # NOTE: available after CMake 3.11
 include(FetchContent)
 
+FetchContent_Declare(fmt
+  GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+  GIT_TAG 0041a40c1350ba702d475b9c4ad62da77caea164
+)
+FetchContent_MakeAvailable(fmt)
+
 # all required packages
 find_package(Boost REQUIRED)
 find_package(Boost COMPONENTS program_options REQUIRED) # boost::program_options

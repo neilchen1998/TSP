@@ -8,7 +8,7 @@
 #include <vector>       // std::vector
 
 #include <boost/math/special_functions/factorials.hpp>  //boost::math::factorial
-#include <vector>
+#include <fmt/ranges.h>
 
 #include "math/mathlib.hpp"
 #include "constant/constantlib.hpp"     // constants::INF
@@ -174,6 +174,10 @@ std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coo
         {
             ++counts[assignment];
         }
+
+        #if DEBUG
+        fmt::println("assignments: {}", assignments);
+        #endif
 
         // sums up the coordinates to the clusters
         graph::Coordinate zero;
