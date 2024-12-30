@@ -29,7 +29,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # compiler flags
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         add_compile_options(-Wall -Wextra -pedantic -g3 -fsanitize=address,undefined)
-    elseif(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "Test")
+    elseif(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "Test" OR CMAKE_BUILD_TYPE STREQUAL "TEST")
         add_compile_options(-Wall -Wextra -pedantic -O3)
     endif()
 
@@ -43,7 +43,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     include(CTest)
 
     # compile definition
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "TEST")
         add_compile_definitions(DEBUG)
     endif()
 
@@ -78,6 +78,6 @@ add_subdirectory(src)
 add_subdirectory(apps)
 
 # checks if we are in the main CMakeLists
-if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING) AND BUILD_TESTING AND CMAKE_BUILD_TYPE STREQUAL "Test")
+if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING) AND BUILD_TESTING AND (CMAKE_BUILD_TYPE STREQUAL "Test" OR CMAKE_BUILD_TYPE STREQUAL "TEST"))
     add_subdirectory(tests)
 endif()

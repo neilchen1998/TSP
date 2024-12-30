@@ -39,7 +39,7 @@ function run_test_cases()
 # gets the options
 # NOTE: the order of the argument list matters
 # in this case, '-t' will be processed first, then '-d', etc
-while getopts ":btdrmh:" option; do
+while getopts ":btTdrmh:" option; do
     case $option in
         h) # display Help
             help
@@ -53,6 +53,8 @@ while getopts ":btdrmh:" option; do
             RUN_BINARY="No";;
         t) # test
             BUILD_TYPE="Test";;
+        T) # test
+            BUILD_TYPE="TEST";;
         m) # manual select build type
             BUILD_TYPE=$OPTARG;;
         \?) # invalid option
@@ -63,7 +65,7 @@ done
 
 configure_and_build &&
 
-if [[ "$BUILD_TYPE" == "Test" ]]; then
+if [[ "$BUILD_TYPE" == "Test" || "$BUILD_TYPE" == "TEST" ]]; then
     run_test_cases
 elif [[ "$RUN_BINARY" == "Yes" ]]; then
     run_binary
