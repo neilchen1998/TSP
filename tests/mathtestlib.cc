@@ -5,6 +5,7 @@
 
 #include "math/mathlib.hpp"
 #include "constant/constantlib.hpp"     // constants::INF
+#include "graph/nodelib.hpp"
 
 TEST_CASE("Permutation", "[main]")
 {
@@ -112,7 +113,7 @@ TEST_CASE("K Mean", "[main]")
     {
         {160, 30},
         {172, 180},
-        {22.5, 110}
+        {22.5, 110.0}
     };
 
     SECTION ("3 Clusters", "[main]")

@@ -1,6 +1,7 @@
 #ifndef INCLUDE_GRAPH_NODELIB_H_
 #define INCLUDE_GRAPH_NODELIB_H_
 
+#include <cmath>
 #include <vector>   // std::vector
 #include <iostream> // std::cout
 #include <optional> // std::optional
@@ -13,6 +14,21 @@ namespace graph
     {
         double x;
         double y;
+
+        Coordinate() : x(0.0), y(0.0)
+        {
+
+        }
+
+        Coordinate(int x, int y) : x(x), y(y)
+        {
+
+        }
+
+        Coordinate(double x, double y) : x(x), y(y)
+        {
+
+        }
 
         bool operator==(const Coordinate& other) const
         {

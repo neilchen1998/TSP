@@ -178,6 +178,7 @@ std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coo
         }
 
         // sums up the coordinates to the clusters
+        graph::Coordinate zero;
         std::fill(clusters.begin(), clusters.end(), graph::Coordinate(0, 0));
         for (size_t i = 0; i < N; ++i)
         {
