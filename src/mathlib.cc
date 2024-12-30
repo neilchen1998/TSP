@@ -5,7 +5,7 @@
 #include <string>       // std::string
 #include <tuple>        // std::tuple
 #include <numeric>      // std::reduce
-
+#include <vector>       // std::vector
 
 #include <boost/math/special_functions/factorials.hpp>  //boost::math::factorial
 #include <vector>
@@ -132,28 +132,26 @@ std::tuple<std::vector<std::vector<double>>, double> reduce_graph(const std::vec
     return {ret, reducedValue};
 }
 
-std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coordinates, const size_t k, const size_t maxItr)
+std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coordinates, const size_t K, const size_t maxItr)
 {
     // source: http://www.goldsborough.me/c++/python/cuda/2017/09/10/20-32-46-exploring_k-means_in_python,_c++_and_cuda/
 
     const size_t N = coordinates.size();
 
-    // generates random points
+    // creates an int random generator
     std::random_device rd;
     std::mt19937 gen(rd());
-    const double lower = 0.0, upper = constants::INF;
-    std::uniform_real_distribution<> dis(lower, upper);
+    std::uniform_int_distribution<> dis(0, N - 1);
 
-    // randomly selects the center points of the cluster
-    std::vector<graph::Coordinate> clusters(k);
+    // randomly selects a coordinate to be the center of a cluster
+    std::vector<graph::Coordinate> clusters(K);
     for (auto& cluster : clusters)
     {
-        cluster.x = dis(gen);
-        cluster.y = dis(gen);
+        cluster = coordinates[dis(gen)];
     }
 
     // each coordinate's assignment
-    std::vector<size_t> assignments(N);
+    std::vector<size_t> assignments(K);
 
     size_t cnt = 0;
     while (cnt != maxItr)
