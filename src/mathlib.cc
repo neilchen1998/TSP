@@ -191,7 +191,9 @@ std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coo
         // divides the number of count of each cluster
         std::transform(clusters.begin(), clusters.end(), counts.begin(), clusters.begin(), [](const graph::Coordinate& coordinate, const size_t count)
         {
-            graph::Coordinate ret = {coordinate.x / count, coordinate.y / count};
+            // finds the denominator and makes sure the value is at least greater than or equal to one
+            auto deno = std::max<size_t> (count, 1);
+            graph::Coordinate ret = {coordinate.x / deno, coordinate.y / deno};
             return ret;
         });
 
