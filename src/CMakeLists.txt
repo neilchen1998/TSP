@@ -18,6 +18,7 @@ target_link_libraries(math_library PUBLIC Boost::boost fmt::fmt)
 target_link_libraries(graph_library PUBLIC math_library)
 
 target_compile_features(graph_library PUBLIC cxx_std_23)  # requires C+23 for std::print, std::ranges::copy
+target_compile_features(math_library PUBLIC cxx_std_20)  # requires C+20 for std::format
 
 # for IDEs
 source_group(

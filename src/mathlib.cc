@@ -1,6 +1,5 @@
 #include <cmath>        // square
 #include <algorithm>    // std::prev_permutation, std::min_element, std::fill, std::transform
-#include <cstddef>
 #include <random>       // std::uniform_real_distribution, std::mt19937, std::random_device
 #include <string>       // std::string
 #include <tuple>        // std::tuple
@@ -16,8 +15,21 @@
 
 #if DEBUG
 #include <iostream>     // std::cout
+#include <string_view>  // std::string_view
+#include <format>       // std::format
+#include "fmt/base.h"           // fmt::println
 #include "graph/visualizerlib.hpp"
 #endif
+
+void print_cluster(const std::vector<graph::Coordinate>& clusters, std::string_view name)
+{
+    std::cout << name << "\n";
+    for (auto& cluster : clusters)
+    {
+        std::cout << std::setprecision(2) << std::format("({}, {})\t", cluster.x, cluster.y);
+    }
+    std::cout << std::endl;
+}
 
 double distance(double x1, double y1, double x2, double y2)
 {
@@ -145,6 +157,7 @@ std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coo
 
     // randomly selects a coordinate to be the center of a cluster
     std::vector<graph::Coordinate> clusters(K);
+    std::vector<graph::Coordinate> prevClusters(K, graph::Coordinate(constants::INF, constants::INF));
     for (auto& cluster : clusters)
     {
         cluster = coordinates[dis(gen)];
@@ -154,7 +167,8 @@ std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coo
     std::vector<size_t> assignments(K);
 
     size_t cnt = 0;
-    while (cnt != maxItr)
+    float delta = constants::INF;
+    while (cnt != maxItr && delta > 0.05)
     {
         // finds the best assignment
         for (size_t i = 0; i < N; ++i)
@@ -196,6 +210,23 @@ std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coo
             graph::Coordinate ret = {coordinate.x / deno, coordinate.y / deno};
             return ret;
         });
+
+        // finds the difference percentage between the previous and the current
+        delta = std::transform_reduce(clusters.begin(), clusters.end(), prevClusters.begin(), 0.0, std::plus<double>(), [](const graph::Coordinate& cur, const graph::Coordinate& prev)
+        {
+            auto diffX = std::abs(cur.x - prev.x) / (prev.x + 0.00001);
+            auto diffY = std::abs(cur.y - prev.y) / (prev.y + 0.00001);
+
+            return (diffX + diffY) / 2;
+        });
+
+        #if DEBUG
+        print_cluster(prevClusters, "prev");
+        print_cluster(clusters, "cur");
+        fmt::println("# of iterations: {}, delta: {}", cnt, delta);
+        #endif
+
+        prevClusters = clusters;
 
         ++cnt;
     }
