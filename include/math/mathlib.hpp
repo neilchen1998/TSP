@@ -28,4 +28,11 @@ std::tuple<std::vector<std::vector<double>>, double> reduce_graph(const std::vec
 /// @param col The column
 void set_row_col_inf(std::vector<std::vector<double>>& graph, size_t row, size_t col);
 
+/// @brief Find the coordinates of the clusters
+/// @param coordinates The input coordinates
+/// @param k The number of clusters
+/// @param maxItr The maximum number of iterations
+/// @return The center coordinates of the clusters
+std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coordinates, const size_t k, const size_t maxItr = 1000);
+
 #endif // INCLUDE_MATH_MATHLIB_H_

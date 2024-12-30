@@ -1,10 +1,14 @@
 #include <cmath>        // square
-#include <algorithm>    // std::prev_permutation, std::min_element
+#include <algorithm>    // std::prev_permutation, std::min_element, std::fill, std::transform
+#include <cstddef>
+#include <random>       // std::uniform_real_distribution, std::mt19937, std::random_device
 #include <string>       // std::string
 #include <tuple>        // std::tuple
 #include <numeric>      // std::reduce
 
+
 #include <boost/math/special_functions/factorials.hpp>  //boost::math::factorial
+#include <vector>
 
 #include "math/mathlib.hpp"
 #include "constant/constantlib.hpp"     // constants::INF
@@ -126,4 +130,71 @@ std::tuple<std::vector<std::vector<double>>, double> reduce_graph(const std::vec
     double reducedValue = std::reduce(reducedValues.cbegin(), reducedValues.cend());
 
     return {ret, reducedValue};
+}
+
+std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coordinates, const size_t k, const size_t maxItr)
+{
+    // source: http://www.goldsborough.me/c++/python/cuda/2017/09/10/20-32-46-exploring_k-means_in_python,_c++_and_cuda/
+
+    const size_t N = coordinates.size();
+
+    // generates random points
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    const double lower = 0.0, upper = constants::INF;
+    std::uniform_real_distribution<> dis(lower, upper);
+
+    // randomly selects the center points of the cluster
+    std::vector<graph::Coordinate> clusters(k);
+    for (auto& cluster : clusters)
+    {
+        cluster.x = dis(gen);
+        cluster.y = dis(gen);
+    }
+
+    // each coordinate's assignment
+    std::vector<size_t> assignments(N);
+
+    size_t cnt = 0;
+    while (cnt != maxItr)
+    {
+        // finds the best assignment
+        for (size_t i = 0; i < N; ++i)
+        {
+            auto curCoordinate = coordinates[i];
+            auto itr = std::min_element(clusters.begin(), clusters.end(), [&curCoordinate](const graph::Coordinate& lhs, const graph::Coordinate& rhs)
+                {
+                    return distance(lhs, curCoordinate) < distance(rhs, curCoordinate);
+                });
+
+            assignments[i] = std::distance(clusters.begin(), itr);
+        }
+
+        // counts the number of each cluster
+        std::vector<size_t> counts(N, 0);
+        for (auto assignment : assignments)
+        {
+            ++counts[assignment];
+        }
+
+        // sums up the coordinates to the clusters
+        std::fill(clusters.begin(), clusters.end(), graph::Coordinate(0, 0));
+        for (size_t i = 0; i < N; ++i)
+        {
+            clusters[assignments[i]].x += coordinates[i].x;
+            clusters[assignments[i]].y += coordinates[i].y;
+        }
+
+        // divides the number of count of each cluster
+        std::transform(clusters.begin(), clusters.end(), counts.begin(), clusters.begin(), [](const graph::Coordinate& coordinate, const size_t count)
+        {
+            graph::Coordinate ret = {coordinate.x / count, coordinate.y / count};
+            return ret;
+        });
+
+        ++cnt;
+    }
+
+    // returns the centroids of the clusters
+    return clusters;
 }

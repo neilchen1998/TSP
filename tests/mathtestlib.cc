@@ -1,3 +1,4 @@
+#include <cstddef>
 #define CATCH_CONFIG_MAIN
 
 #include <catch2/catch.hpp>
@@ -94,5 +95,30 @@ TEST_CASE("Set Row and Column to Inf", "[main]")
         const size_t row = 0, col = 1;
         set_row_col_inf(graph, row, col);
         REQUIRE (graph == ans_graph);
+    }
+}
+
+TEST_CASE("K Mean", "[main]")
+{
+    std::vector<graph::Coordinate> coordinates =
+    {
+        {160, 30},
+        {172, 180},
+        {20, 100},
+        {25, 110}
+    };
+
+    std::vector<graph::Coordinate> clusters =
+    {
+        {160, 30},
+        {172, 180},
+        {22.5, 110}
+    };
+
+    SECTION ("3 Clusters", "[main]")
+    {
+        const size_t k = 3;
+        auto ret = k_means(coordinates, k, 500);
+        REQUIRE (ret == clusters);
     }
 }
