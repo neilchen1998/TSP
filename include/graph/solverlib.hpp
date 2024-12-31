@@ -17,6 +17,8 @@ namespace graph
         /// @param graph The weight graph
         /// @param maxIteration The maximum number of iterations before time-out
         std::tuple<std::vector<size_t>, double> branch_and_bound(const std::vector<std::vector<double>> &graph, const size_t maxIteration = 9999);
+
+        std::tuple<std::vector<size_t>, double> dynamic_programming(const std::vector<std::vector<double>> &graph);
     };  // namespace solver
 
     /// @brief Explore a new node in the branch and bound algorithm
@@ -32,6 +34,8 @@ namespace graph
     /// @param visited The bitset that entails all visited nodes
     /// @return An unvisited node, if all node have been visited, then std::nullopt
     std::optional<size_t> find_unvisited_node(const boost::dynamic_bitset<>& visited);
+
+    double backtracking(const std::vector<std::vector<double>> &graph, std::unordered_map<std::string, double>& cache, boost::dynamic_bitset<>& visited, std::string& path, size_t cur, size_t prev);
 };  // namespace graph
 
 #endif // INCLUDE_GRAPH_SOLVERLIB_H_

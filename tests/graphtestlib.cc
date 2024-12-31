@@ -179,3 +179,36 @@ TEST_CASE("Branch and Bound", "[main]")
         CHECK (ret_cost == ans_cost);
     }
 }
+
+TEST_CASE("Dynamic Programming", "[main]")
+{
+    SECTION ("Solver", "[main]")
+    {
+        std::vector<std::vector<double>> graph =
+        {
+            {0, 4, 1, 9},
+            {3, 0, 6, 11},
+            {4, 1, 0, 2},
+            {6, 5, -4, 0},
+        };
+        auto [ret_path, ret_cost] = graph::solver::dynamic_programming(graph);
+        CHECK (ret_cost == 9);
+    }
+
+    SECTION ("Solver", "[main]")
+    {
+        const std::vector<std::vector<double>> graph =
+        {
+            {constants::INF, 20, 30, 10, 11},
+            {15, constants::INF, 16, 4, 2},
+            {3, 5, constants::INF, 2, 4},
+            {19, 6, 18, constants::INF, 3},
+            {16, 4, 7, 16, constants::INF}
+        };
+        const std::vector<size_t> ans_path = {0, 3, 1, 4, 2};
+        const double ans_cost = 28;
+        auto [ret_path, ret_cost] = graph::solver::dynamic_programming(graph);
+        // CHECK (ret_path == ans_path);
+        CHECK (ret_cost == ans_cost);
+    }
+}
