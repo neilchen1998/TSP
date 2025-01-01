@@ -208,7 +208,7 @@ TEST_CASE("Dynamic Programming", "[main]")
         const std::vector<size_t> ans_path = {0, 3, 1, 4, 2};
         const double ans_cost = 28;
         auto [ret_path, ret_cost] = graph::solver::DFS(graph);
-        // CHECK (ret_path == ans_path);
+        CHECK (ret_path == ans_path);
         CHECK (ret_cost == ans_cost);
     }
 }

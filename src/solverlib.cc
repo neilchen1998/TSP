@@ -196,18 +196,19 @@ std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const st
     return {pq.front().GetPath(), pq.front().GetCost()};
 }
 
-double dfs(const std::vector<std::vector<double>> &graph, boost::dynamic_bitset<>& visited, size_t cur)
+std::tuple<std::vector<size_t>, double> dfs(const std::vector<std::vector<double>> &graph, boost::dynamic_bitset<>& visited, size_t cur, std::vector<size_t>& path)
 {
     // base case: visited all nodes and return to the start node
     if (visited.all())
     {
-        return graph[cur][0];
+        return {path, graph[cur][0]};
     }
 
     const size_t N = graph.size();
 
     // sets the current cost to inf
-    double curCost = constants::INF;
+    double bestCost = constants::INF;
+    std::vector<size_t> bestPath;
 
     // explores all options
     for (size_t i = 1; i < N; ++i)
@@ -217,16 +218,22 @@ double dfs(const std::vector<std::vector<double>> &graph, boost::dynamic_bitset<
         {
             // makes a decision
             visited[i] = 1;
+            path.push_back(i);
 
-            double c = graph[cur][i] + dfs(graph, visited, i);
-            curCost = std::min<double>(c, curCost);
+            auto [p, c] = dfs(graph, visited, i, path);
+            if ((c + graph[cur][i]) < bestCost)
+            {
+                bestCost = c + graph[cur][i];
+                bestPath = p;
+            }
 
             // undoes the decision
             visited[i] = 0;
+            path.pop_back();
         }
     }
 
-    return curCost;
+    return {bestPath, bestCost};
 }
 
 std::tuple<std::vector<size_t>, double> graph::solver::DFS(const std::vector<std::vector<double>> &graph)
@@ -235,9 +242,7 @@ std::tuple<std::vector<size_t>, double> graph::solver::DFS(const std::vector<std
 
     boost::dynamic_bitset<> visited(N, 0);
     visited[0] = 1;
+    std::vector<size_t> path({0});
 
-    double ret = constants::INF;
-    ret = std::min<double>(dfs(graph, visited, 0), ret);
-
-    return {{}, ret};
+    return dfs(graph, visited, 0, path);
 }
