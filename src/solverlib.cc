@@ -196,47 +196,48 @@ std::tuple<std::vector<size_t>, double> graph::solver::branch_and_bound(const st
     return {pq.front().GetPath(), pq.front().GetCost()};
 }
 
-double graph::backtracking(const std::vector<std::vector<double>> &graph, std::unordered_map<std::string, double>& cache, boost::dynamic_bitset<>& visited, std::string& path, size_t cur, size_t prev)
+double dfs(const std::vector<std::vector<double>> &graph, boost::dynamic_bitset<>& visited, size_t cur)
 {
-
-    std::cout << "visited: " << visited << "\t";
-    std::println("path: {}, prev: {}, cur: {}", path, prev, cur);
-
-    const size_t N = visited.size();
-    if (visited.all())  return graph[cur][0];
-
-    if (cache.count(path) > 0)   return cache[path];
-
-    double curCost = constants::INF;
-    for (boost::dynamic_bitset<>::size_type i = 1; i < N; ++i)
+    // base case: visited all nodes and return to the start node
+    if (visited.all())
     {
+        return graph[cur][0];
+    }
+
+    const size_t N = graph.size();
+
+    // sets the current cost to inf
+    double curCost = constants::INF;
+
+    // explores all options
+    for (size_t i = 1; i < N; ++i)
+    {
+        // makes sure we only explore nodes that have not yet visited
         if (!visited[i])
         {
+            // makes a decision
             visited[i] = 1;
-            path.push_back(i + 'a');
-            double c = graph[prev][cur] + backtracking(graph, cache, visited, path, i, cur);
-            curCost = std::min(c, curCost);
+
+            double c = graph[cur][i] + dfs(graph, visited, i);
+            curCost = std::min<double>(c, curCost);
+
+            // undoes the decision
             visited[i] = 0;
-            path.pop_back();
         }
     }
 
-    cache[path] = curCost;
-
-    return cache[path];
+    return curCost;
 }
 
-std::tuple<std::vector<size_t>, double> graph::solver::dynamic_programming(const std::vector<std::vector<double>> &graph)
+std::tuple<std::vector<size_t>, double> graph::solver::DFS(const std::vector<std::vector<double>> &graph)
 {
     const size_t N = graph.size();
+
     boost::dynamic_bitset<> visited(N, 0);
     visited[0] = 1;
-    visited[1] = 1;
-    std::unordered_map<std::string, double> cache;
-    std::string path("ab");
 
-    double b = backtracking(graph, cache, visited, path, 1, 0);
+    double ret = constants::INF;
+    ret = std::min<double>(dfs(graph, visited, 0), ret);
 
-
-    return {{}, b};
+    return {{}, ret};
 }
