@@ -14,6 +14,12 @@ The requirements are:
 
 ## Instructions
 
+To use the script to make your life easier:
+
+```bash
+./compile_n_run.sh [OPTIONS]
+```
+
 To configure (Debug):
 
 ```bash
@@ -71,3 +77,8 @@ To build docs (requires Doxygen, output in `build/docs/html`):
 ```bash
 cmake --build build --target docs
 ```
+
+
+## Reference
+
+* [Test data](https://www.math.uwaterloo.ca/tsp/world/countries.html)

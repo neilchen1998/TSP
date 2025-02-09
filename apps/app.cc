@@ -64,6 +64,7 @@ int main(int argc, char* argv[])
 
     if (nodes.empty())
     {
+        std::cerr << "Error: Cannot read the file!" << std::endl;
         return EXIT_FAILURE;
     }
 
