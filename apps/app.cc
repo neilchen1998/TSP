@@ -4,6 +4,7 @@
 #include <string>   // std::string
 #include <vector>   // std::vector
 #include <tuple>    // std::tie
+#include <unordered_set>    // std::unordered_set
 
 #include <boost/program_options.hpp>    // boost::program_options
 
@@ -60,6 +61,25 @@ int main(int argc, char* argv[])
     std::cout << "*** Travelling Salesman Problem ***" << std::endl;
     std::println("filename: {}", filename);
     std::println("solver: {}", solver);
+
+    // checks if the solver that the user enters is available
+    std::unordered_set<std::string> solvers ({"brute_force", "branch_n_bound"});
+    if (solvers.find(solver) == solvers.end())
+    {
+        std::cerr << "Error: " << solver << " is not available!" << std::endl;
+        std::cout << "The available options are: ";
+
+        // prints out all available solvers
+        for (const auto& s : solvers)
+        {
+            std::cout << s << "  ";
+        }
+        std::cout << std::endl;
+
+        return EXIT_FAILURE;
+    }
+
+    // gets the nodes from the file
     auto nodes = get_nodes_from_file(filename);
 
     if (nodes.empty())
