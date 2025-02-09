@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 
     if (nodes.empty())
     {
-        std::cerr << "Error: Cannot read the file!" << std::endl;
+        std::cerr << "Error: Cannot get nodes from the input file!" << std::endl;
         return EXIT_FAILURE;
     }
 
