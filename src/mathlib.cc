@@ -21,6 +21,8 @@
 #include "graph/visualizerlib.hpp"
 #endif
 
+#define MATH_PERMUTATION_SIZE 1000000
+
 void print_cluster(const std::vector<graph::Coordinate>& clusters, std::string_view name)
 {
     std::cout << name << "\n";
@@ -51,6 +53,9 @@ std::vector<std::string> generate_permutation(int N)
 
     // calculates the size of the permutation vector (the factorial of N)
     auto sz = boost::math::factorial<double>(N);
+
+    sz = (sz > MATH_PERMUTATION_SIZE) ? MATH_PERMUTATION_SIZE : sz;
+
     ret.resize(sz);
 
     // constructs the base permutation string
@@ -69,7 +74,7 @@ std::vector<std::string> generate_permutation(int N)
     {
         ret[i] = s;
         ++i;
-    } while (std::next_permutation(s.begin(), s.end()));
+    } while (std::next_permutation(s.begin(), s.end()) && i < MATH_PERMUTATION_SIZE);
 
     return ret;
 }
