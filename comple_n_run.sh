@@ -1,15 +1,20 @@
 #!/bin/bash
 
 BUILD_TYPE="Release"
-RUN_BINARY="Yes"
+RUN_BINARY="No"
 
 # help function
 function help()
 {
     # display help
-    printf "options:\n"
-    printf "g\tPrint help.\n"
-    printf "v\tVerbose mode.\n"
+    printf "Usage: %s [OPTIONS]\n" "$0"  # includes the script name
+    printf "Options:\n"
+    printf "  -h, --help      Display this help message\n"
+    printf "  -d, --debug     Build in Debug mode\n"
+    printf "  -r, --run       Build in Release mode and run the app\n"
+    printf "  -b, --build     Build only in Release mode\n"
+    printf "  -t, --test      Build and run tests\n"
+    printf "  -m, --mode <mode> Build in specified mode (e.g., -m Debug)\n"
 }
 
 # configures and builds the project
@@ -39,15 +44,16 @@ function run_test_cases()
 # gets the options
 # NOTE: the order of the argument list matters
 # in this case, '-t' will be processed first, then '-d', etc
-while getopts ":btTdrmh:" option; do
+while getopts ":hdrbtTm:" option; do
     case $option in
         h) # display Help
             help
             exit;;
         d) # debug
             BUILD_TYPE="Debug";;
-        r) # release
-            BUILD_TYPE="Release";;
+        r) # run
+            BUILD_TYPE="Release"
+            RUN_BINARY="Yes";;
         b) # build
             BUILD_TYPE="Release"
             RUN_BINARY="No";;
