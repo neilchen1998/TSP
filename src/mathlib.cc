@@ -1,4 +1,4 @@
-#include <cmath>        // square
+#include <cmath>        // square, std::hypot
 #include <algorithm>    // std::prev_permutation, std::min_element, std::fill, std::transform
 #include <random>       // std::uniform_real_distribution, std::mt19937, std::random_device
 #include <string>       // std::string
@@ -38,7 +38,7 @@ double distance(double x1, double y1, double x2, double y2)
     double x_diff = (x1 - x2);
     double y_diff = (y1 - y2);
 
-    return sqrt(x_diff * x_diff + y_diff * y_diff);
+    return std::hypot(x_diff, y_diff);
 }
 
 double distance(const graph::Coordinate& a, const graph::Coordinate& b)
