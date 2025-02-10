@@ -20,6 +20,12 @@ To use the script to make your life easier:
 ./compile_n_run.sh [OPTIONS]
 ```
 
+To build a release build
+
+```bash
+./compile_n_run.sh -r
+```
+
 To configure (Debug):
 
 ```bash
@@ -57,9 +63,14 @@ To test by tag
 cd build && ctest -R <tag>
 ```
 
-To run
+To run with default solver
 ```
 ./build/apps/app
+```
+
+To run with a custom solver
+```
+./build/apps/app -s [SOLVER]
 ```
 
 To build and run
