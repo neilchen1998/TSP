@@ -21,7 +21,7 @@
 #include "graph/visualizerlib.hpp"
 #endif
 
-#define MATH_PERMUTATION_SIZE 1000000
+#define MATH_PERMUTATION_SIZE 4000000
 
 void print_cluster(const std::vector<graph::Coordinate>& clusters, std::string_view name)
 {
