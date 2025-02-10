@@ -23,7 +23,7 @@ To use the script to make your life easier:
 To build a release build
 
 ```bash
-./compile_n_run.sh -r
+./compile_n_run.sh -b
 ```
 
 To configure (Debug):
