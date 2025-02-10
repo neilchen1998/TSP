@@ -103,17 +103,18 @@ TEST_CASE("K Mean", "[main]")
 {
     std::vector<graph::Coordinate> coordinates =
     {
-        {160, 30},
-        {172, 180},
+        {200, 57},
+        {202, 60},
+        {219, 63},
         {20, 100},
         {25, 110}
     };
 
     std::vector<graph::Coordinate> clusters =
     {
-        {160, 30},
-        {172, 180},
-        {22.5, 110.0}
+        {20, 100},
+        {25, 110},
+        {207, 60}
     };
 
     SECTION ("3 Clusters", "[main]")

@@ -236,6 +236,12 @@ std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coo
         ++cnt;
     }
 
+    // sorts the clusters based on the distance from the origin point
+    std::sort(clusters.begin(), clusters.end(), [](const graph::Coordinate& a, const graph::Coordinate& b)
+    {
+        return ((a.x * a.x) + (a.y * a.y)) < ((b.x * b.x) + (b.y * b.y));
+    });
+
     // returns the centroids of the clusters
     return clusters;
 }
