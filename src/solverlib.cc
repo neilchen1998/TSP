@@ -19,7 +19,7 @@
 #include "graph/visualizerlib.hpp"
 #endif
 
-double graph::solver::brute_force(const std::vector<std::vector<double>> &graph)
+std::tuple<std::vector<size_t>, double> graph::solver::brute_force(const std::vector<std::vector<double>> &graph)
 {
     const size_t N = graph.size();
 
@@ -36,6 +36,7 @@ double graph::solver::brute_force(const std::vector<std::vector<double>> &graph)
 
     // loops through all permutations
     double ret = (double)INT_MAX;
+    std::string_view shortestPath;
     for (size_t i = 0; i < per.size(); ++i)
     {
         double cur = 0.0;
@@ -47,10 +48,26 @@ double graph::solver::brute_force(const std::vector<std::vector<double>> &graph)
             cur += graph[from][to];
         }
 
-        ret = std::min(cur, ret);
+        // if a smaller value is found, then updates the value and the path
+        if (cur < ret)
+        {
+            shortestPath = per[i];
+            ret = cur;
+        }
     }
 
-    return ret;
+    #if DEBUG
+    std::cout << "Shortest path: " << shortestPath << std::endl;
+    #endif
+
+    // converts alphabetic notations to numeric
+    std::vector<size_t> path(N);
+    std::transform(shortestPath.cbegin(), shortestPath.cend(), path.begin(), [](char c)
+    {
+        return c - 'a';
+    });
+
+    return {path, ret};
 }
 
 std::tuple< std::vector<std::vector<double>>, double> graph::explore_new_node(const std::vector<std::vector<double>> &graph, const size_t from, const size_t to, double prevCost, const size_t start)

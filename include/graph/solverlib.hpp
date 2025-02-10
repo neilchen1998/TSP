@@ -11,7 +11,10 @@ namespace graph
 {
     namespace solver
     {
-        double brute_force(const std::vector<std::vector<double>>& graph);
+        /// @brief Solve the TSP with brute force
+        /// @param graph The weight graph
+        /// @return {the shortest path, the min. cost}
+        std::tuple<std::vector<size_t>, double> brute_force(const std::vector<std::vector<double>>& graph);
 
         /// @brief Solve the TSP with Branch and Bound algorithm
         /// @param graph The weight graph

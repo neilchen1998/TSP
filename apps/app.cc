@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        cost = graph::solver::brute_force(graph);
+        std::tie(path, cost) = graph::solver::brute_force(graph);
     }
 
     if (cost == constants::INF)
