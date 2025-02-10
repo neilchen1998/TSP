@@ -101,24 +101,23 @@ TEST_CASE("Set Row and Column to Inf", "[main]")
 
 TEST_CASE("K Mean", "[main]")
 {
-    std::vector<graph::Coordinate> coordinates =
-    {
-        {200, 57},
-        {202, 60},
-        {219, 63},
-        {20, 100},
-        {25, 110}
-    };
-
-    std::vector<graph::Coordinate> clusters =
-    {
-        {20, 100},
-        {25, 110},
-        {207, 60}
-    };
-
     SECTION ("3 Clusters", "[main]")
     {
+        std::vector<graph::Coordinate> coordinates =
+        {
+            {200, 57},
+            {202, 60},
+            {219, 63},
+            {20, 100},
+            {25, 110}
+        };
+
+        std::vector<graph::Coordinate> clusters =
+        {
+            {20, 100},
+            {25, 110},
+            {207, 60}
+        };
         const size_t k = 3;
         auto ret = k_means(coordinates, k, 500);
         REQUIRE (ret == clusters);
