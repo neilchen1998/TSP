@@ -17,7 +17,7 @@ TEST_CASE("Brute Force", "[main]")
             {4, 1, 0, 2},
             {6, 5, -4, 0},
         };
-        auto [_, ret_cost] ans = graph::solver::brute_force(graph);
+        auto [_, ret_cost] = graph::solver::brute_force(graph);
         CHECK (ret_cost == 9);
     }
 }
