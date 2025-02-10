@@ -11,6 +11,7 @@
 #include <string>   // std::string
 
 #include <boost/dynamic_bitset.hpp>     // boost::dynamic_bitset
+
 #include "math/mathlib.hpp"
 #include "constant/constantlib.hpp"     // constants::INF
 #include "graph/nodelib.hpp"            // graph::Node
@@ -262,4 +263,13 @@ std::tuple<std::vector<size_t>, double> graph::solver::DFS(const std::vector<std
     std::vector<size_t> path({0});
 
     return dfs(graph, visited, 0, path);
+}
+
+std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const std::vector<graph::Coordinate>& nodes, const std::vector<std::vector<double>> &graph, size_t k)
+{
+    const size_t N = graph.size();
+
+    auto clusters = k_means(nodes, 10, 20);
+
+    return {{}, constants::INF};
 }

@@ -7,6 +7,8 @@
 
 #include <boost/dynamic_bitset.hpp> // boost::dynamic_bitset
 
+#include "graph/nodelib.hpp"    // graph::Coordinate
+
 namespace graph
 {
     namespace solver
@@ -26,6 +28,14 @@ namespace graph
         /// @param graph The weight graph
         /// @return {the shortest path, the min. cost}
         std::tuple<std::vector<size_t>, double> DFS(const std::vector<std::vector<double>> &graph);
+
+        /// @brief Solve the TSP with dividing up the original problem into smaller sub-problems and solve it with brute force
+        /// @param nodes The nodes
+        /// @param graph The weight graph
+        /// @param k The number of groups (default to 5)
+        /// @return {the shortest path, the min. cost}
+        std::tuple<std::vector<size_t>, double> divide_n_conquer(const std::vector<graph::Coordinate>& nodes, const std::vector<std::vector<double>> &graph, size_t k = 5);
+
     };  // namespace solver
 
     /// @brief Explore a new node in the branch and bound algorithm

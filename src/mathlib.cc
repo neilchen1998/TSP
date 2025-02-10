@@ -173,7 +173,7 @@ std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coo
 
     size_t cnt = 0;
     float delta = constants::INF;
-    while (cnt != maxItr && delta > 0.05)
+    while (cnt < maxItr && delta > 0.05)
     {
         // finds the best assignment
         for (size_t i = 0; i < N; ++i)
@@ -237,10 +237,15 @@ std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coo
     }
 
     // sorts the clusters based on the distance from the origin point
-    std::sort(clusters.begin(), clusters.end(), [](const graph::Coordinate& a, const graph::Coordinate& b)
+    std::stable_sort(clusters.begin(), clusters.end(), [](const graph::Coordinate& a, const graph::Coordinate& b)
     {
-        return ((a.x * a.x) + (a.y * a.y)) < ((b.x * b.x) + (b.y * b.y));
+        return std::hypot(a.x, a.y) < std::hypot(b.x, b.y);
     });
+
+    for (auto cluster : clusters)
+    {
+        fmt::println("{} {}", cluster.x, cluster.y);
+    }
 
     // returns the centroids of the clusters
     return clusters;

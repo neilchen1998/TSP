@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
     std::println("solver: {}", solver);
 
     // checks if the solver that the user enters is available
-    std::unordered_set<std::string> solvers ({"brute_force", "branch_n_bound", "DFS"});
+    std::unordered_set<std::string> solvers ({"brute_force", "branch_n_bound", "DFS", "divide_n_conquer"});
     if (solvers.find(solver) == solvers.end())
     {
         std::cerr << "Error: " << solver << " is not available!" << std::endl;
@@ -112,6 +112,10 @@ int main(int argc, char* argv[])
     else if (solver == "DFS")
     {
         std::tie(path, cost) = graph::solver::DFS(graph);
+    }
+    else if (solver == "divide_n_conquer")
+    {
+        std::tie(path, cost) = graph::solver::divide_n_conquer(nodes, graph);
     }
 
     if (cost == constants::INF)

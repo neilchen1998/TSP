@@ -8,7 +8,7 @@ include_directories(${Boost_INCLUDE_DIR})  # all libraries require Boost
 
 add_library(math_library mathlib.cc ${MATH_HEADER_LIST})
 add_library(filesystem_library loadlib.cc ${FILESYSTEM_HEADER_LIST})
-add_library(graph_library nodelib.cc solverlib.cc visualizerlib.cc ${FILESYSTEM_HEADER_LIST})
+add_library(graph_library nodelib.cc solverlib.cc visualizerlib.cc ${FILESYSTEM_HEADER_LIST} ${GRAPH_HEADER_LIST})
 
 target_include_directories(math_library PUBLIC ../include)
 target_include_directories(filesystem_library PUBLIC ../include)
