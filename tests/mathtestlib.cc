@@ -196,30 +196,14 @@ TEST_CASE("K Mean", "[main]")
             distYs.emplace_back(clusters[i].y, 2.0);
         }
 
-        size_t idx = 0;
-        for (size_t i = 0; i < N0; ++i)
+        // generates coordinates based on the predefined centroids points
+        for (size_t i = 0; i < clusters.size(); ++i)
         {
-            coordinates.emplace_back(distXs[idx](gen), distYs[idx](gen));
-        }
-        ++idx;
-        for (size_t i = 0; i < N1; ++i)
-        {
-            coordinates.emplace_back(distXs[idx](gen), distYs[idx](gen));
-        }
-        ++idx;
-        for (size_t i = 0; i < N2; ++i)
-        {
-            coordinates.emplace_back(distXs[idx](gen), distYs[idx](gen));
-        }
-        ++idx;
-        for (size_t i = 0; i < N3; ++i)
-        {
-            coordinates.emplace_back(distXs[idx](gen), distYs[idx](gen));
-        }
-        ++idx;
-        for (size_t i = 0; i < N4; ++i)
-        {
-            coordinates.emplace_back(distXs[idx](gen), distYs[idx](gen));
+            // generates x number of points that are centered at cluster[i]
+            for (size_t j = 0; j < Ns[i]; ++j)
+            {
+                coordinates.emplace_back(distXs[i](gen), distYs[i](gen));
+            }
         }
 
         // calls the functions T times and picks the results that has the lowest variance value
