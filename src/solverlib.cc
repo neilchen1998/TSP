@@ -300,15 +300,31 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
     }
     std::cout << "\n";
 
+    // the index of the start point
+    size_t startIdx = assignments.front();
+
+    #if DEBUG
+    std::println("Start idx: {}", startIdx);
+    #endif
+
+    // makes the cluster that has the start point to be in the first element since we need to start from that cluster
+    if (startIdx != 0)
+    {
+        std::swap(bestClusters[0], bestClusters[startIdx]);
+    }
+
     // converts clusters to graph
     auto clusterGraph = create_graph(bestClusters);
 
     // travels among the clusters
     auto [path, cost] = solver::DFS(clusterGraph);
+    totalCost += cost;
+
+    #if DEBUG
     std::cout << "Among clusters:\n";
     graph::print_path(path, "Path");
     std::println("Cost: {:.3f}", cost); // a precision of 2 decimal places
-    totalCost += cost;
+    #endif
 
     // travels within each cluster
     std::vector<std::vector<size_t>> paths;
@@ -333,32 +349,50 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
             ++localIndices[curAssignment];
         }
 
+        #if DEBUG
+        std::cout << "size of each cluster:\n";
+        for (size_t i = 0; i < K; ++i)
+        {
+            std::println("Size of # {}: {}", i, pointsInClusters[i].size());
+        }
+        #endif
+
         size_t groupIdx = 0;
         std::set<size_t> visited;
-        for (auto points : pointsInClusters)
+        for (size_t i = 0; i < K; ++i)
         {
-            auto g = create_graph(points);
-            auto [p, c] = solver::DFS(g);
-            std::cout << "Cluster # " << groupIdx << std::endl;
-            std::vector<size_t> p_global(p);
-            for (size_t i = 0; i < p.size(); ++i)
+            if (pointsInClusters[i].size() > 0)
             {
-                visited.insert(tables[groupIdx][p[i]]);
-                p_global[i] = tables[groupIdx][p[i]];
+                auto g = create_graph(pointsInClusters[i]);
+                auto [p, c] = solver::DFS(g);
+                std::vector<size_t> p_global(p);
+                for (size_t i = 0; i < p.size(); ++i)
+                {
+                    visited.insert(tables[groupIdx][p[i]]);
+                    p_global[i] = tables[groupIdx][p[i]];
+                }
+
+                ++groupIdx;
+
+                #if DEBUG
+                std::cout << "Cluster # " << groupIdx << std::endl;
+                graph::print_path(p_global, "Path");
+                std::println("Cost: {:.3f}", c); // a precision of 2 decimal places
+                #endif
             }
-            graph::print_path(p_global, "Path");
-            std::println("Cost: {:.3f}", c); // a precision of 2 decimal places
-            ++groupIdx;
         }
 
+        #if DEBUG
         std::cout << "Visited list:\n";
         for (auto& v : visited)
         {
             std::cout << v << "\n";
         }
+        #endif
     }
 
     // travels from the start point to the start cluster
+
 
     // travels from the end cluster to the end point
 
