@@ -361,7 +361,6 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
         }
         #endif
 
-        size_t groupIdx = 0;
         std::set<size_t> visited;
         for (size_t i = 0; i < K; ++i)
         {
@@ -370,18 +369,17 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
                 auto g = create_graph(pointsInClusters[i]);
                 auto [p, c] = solver::DFS(g);
                 std::vector<size_t> p_global(p);
-                for (size_t i = 0; i < p.size(); ++i)
+                for (size_t j = 0; j < p.size(); ++j)
                 {
-                    visited.insert(tables[groupIdx][p[i]]);
-                    p_global[i] = tables[groupIdx][p[i]];
+                    visited.insert(tables[i][p[j]]);
+                    p_global[j] = tables[i][p[j]];
                 }
 
-                paths[groupIdx] = p_global;
+                paths[i] = p_global;
                 totalCost += c;
-                ++groupIdx;
 
                 #if 1
-                std::cout << "Cluster # " << (groupIdx - 1) << std::endl;
+                std::cout << "Cluster # " << i << std::endl;
                 graph::print_path(p_global, "Path");
                 std::println("Cost: {:.3f}", c); // a precision of 2 decimal places
                 #endif
