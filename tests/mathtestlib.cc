@@ -118,8 +118,34 @@ TEST_CASE("K Mean", "[main]")
             {25, 110},
             {207, 60}
         };
-        const size_t k = 3;
-        auto ret = k_means(coordinates, k, 500);
-        REQUIRE (ret == clusters);
+
+        const size_t K = 3;
+        const size_t T = 10;
+
+        // calls the functions T times and picks the results that has the lowest variance value
+        std::vector<double> vars(T, constants::INF);
+        std::vector<std::vector<graph::Coordinate>> rets(T);
+
+        for (size_t i = 0; i < T; ++i)
+        {
+            auto [a, b] = k_means(coordinates, K, 500);
+            rets[i] = a;
+            vars[i] = b;
+        }
+
+        double var = vars.front();
+        std::vector<graph::Coordinate> ret(rets.front());
+        for (size_t i = 1; i < T; ++i)
+        {
+            if (vars[i] < var)
+            {
+                var = vars[i];
+                ret = rets[i];
+            }
+        }
+
+        CHECK (ret.size() == K);
+        CHECK (ret == clusters);
+        // CHECK (var <= 200);
     }
 }

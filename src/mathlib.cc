@@ -149,7 +149,7 @@ std::tuple<std::vector<std::vector<double>>, double> reduce_graph(const std::vec
     return {ret, reducedValue};
 }
 
-std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coordinates, const size_t K, const size_t maxItr)
+std::tuple<std::vector<graph::Coordinate>, double> k_means(const std::vector<graph::Coordinate>& coordinates, const size_t K, const size_t maxItr)
 {
     // source: http://www.goldsborough.me/c++/python/cuda/2017/09/10/20-32-46-exploring_k-means_in_python,_c++_and_cuda/
 
@@ -264,6 +264,12 @@ std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coo
     }
     #endif
 
+    std::vector<double> vars(K, 0.0);
+    for (size_t i = 0; i < N; ++i)
+    {
+        vars[assignments[i]] += distance(coordinates[i], clusters[assignments[i]]);
+    }
+
     // returns the centroids of the clusters
-    return clusters;
+    return {clusters, std::reduce(vars.begin(), vars.end())};
 }
