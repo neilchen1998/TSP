@@ -169,12 +169,18 @@ std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coo
     }
 
     // each coordinate's assignment
-    std::vector<size_t> assignments(K);
+    std::vector<size_t> assignments(N);
 
     size_t cnt = 0;
     float delta = constants::INF;
     while (cnt < maxItr && delta > 0.05)
     {
+        #if DEBUG
+        std::cout << std::endl;
+        fmt::println("# of iterations: {}, delta: {}", cnt, delta);
+        print_cluster(prevClusters, "prev");
+        #endif
+
         // finds the best assignment
         for (size_t i = 0; i < N; ++i)
         {
@@ -219,17 +225,19 @@ std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coo
         // finds the difference percentage between the previous and the current
         delta = std::transform_reduce(clusters.begin(), clusters.end(), prevClusters.begin(), 0.0, std::plus<double>(), [](const graph::Coordinate& cur, const graph::Coordinate& prev)
         {
+            #if DEBUG
+            fmt::println("new cur: ({}, {}), cur: ({}, {})", cur.x, cur.y, prev.x, prev.y);
+            #endif
+
             auto diffX = std::abs(cur.x - prev.x) / (prev.x + 0.00001);
             auto diffY = std::abs(cur.y - prev.y) / (prev.y + 0.00001);
 
-            return (diffX + diffY) / 2;
+            return (diffX + diffY);
         });
 
-        #if DEBUG
-        print_cluster(prevClusters, "prev");
-        print_cluster(clusters, "cur");
-        fmt::println("# of iterations: {}, delta: {}", cnt, delta);
-        #endif
+        // updates the delta value to see we have converged
+        // NOTE: there are N coordinates in total and each coordinate has two fields, i.e., x & y
+        delta /= (2 * N);
 
         prevClusters = clusters;
 
@@ -242,9 +250,20 @@ std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coo
         return std::hypot(a.x, a.y) < std::hypot(b.x, b.y);
     });
 
+    #if DEBUG
+    std::cout << "\n";
+    fmt::println("Clusters:");
     for (auto cluster : clusters)
     {
-        fmt::println("{} {}", cluster.x, cluster.y);
+        fmt::println("({} {})", cluster.x, cluster.y);
+    }
+    fmt::println("Assignments:");
+    for (size_t i = 0; i < N; ++i)
+    {
+        fmt::println("#{}: {}", i, assignments[i]);
+    }
+    #endif
+
     }
 
     // returns the centroids of the clusters
