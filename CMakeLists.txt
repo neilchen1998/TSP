@@ -27,15 +27,17 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
     # compiler flags
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        add_compile_options(-Wall -Wextra -pedantic -g3 -fsanitize=address,undefined)
-    elseif(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "Test" OR CMAKE_BUILD_TYPE STREQUAL "TEST")
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "TEST")
+        add_compile_options(-Wall -Wextra -pedantic -g -fsanitize=address,undefined)
+    elseif(CMAKE_BUILD_TYPE STREQUAL "Test")
+        add_compile_options(-Wall -Wextra -pedantic -O2)
+    elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
         add_compile_options(-Wall -Wextra -pedantic -O3)
     endif()
 
     # linker flags
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        add_link_options(-g3 -fsanitize=address,undefined)
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "TEST")
+        add_link_options(-g -fsanitize=address,undefined)
     endif()
 
     # uses CTest
