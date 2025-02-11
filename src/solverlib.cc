@@ -9,6 +9,7 @@
 #include <algorithm>// std::algorithm
 #include <print>    // std::print, std::println
 #include <string>   // std::string
+#include <set>   // std::set
 
 #include <boost/dynamic_bitset.hpp>     // boost::dynamic_bitset
 
@@ -312,32 +313,49 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
     // travels within each cluster
     std::vector<std::vector<size_t>> paths;
     {
-        std::unordered_map<size_t, size_t> m;    // key: local index, value: global index
-        std::vector<graph::Coordinate> co;
-        size_t i = 0, j = 0;
-        for (auto& assignment : assignments)
-        {
-            std::println("#{}: {}", i, assignment);
-            if (assignment == 4)
-            {
-                co.emplace_back(nodes[i]);
-                m[j] = i;
-                ++j;
-            }
-            ++i;
-        }
-        auto g = create_graph(co);
-        auto [p, c] = solver::DFS(g);
+        // each table entails how to convert a local index back to its global index
+        // key: local index, value: global index
+        std::vector<std::unordered_map<size_t, size_t>> tables(K);
 
-        std::cout << "Cluster #4\n";
-        std::vector<size_t> p_global(p);
-        for (size_t i = 0; i < p.size(); ++i)
+        // each group
+        std::vector<std::vector<size_t>> groups;
+
+        std::vector<std::vector<graph::Coordinate>> pointsInClusters(K);
+
+        // the number of points of each cluster
+        std::vector<size_t> localIndices(K, 0);
+
+        for (size_t i = 0; i < N; ++i)
         {
-            p_global[i] = m[p[i]];
+            auto curAssignment = assignments[i];
+            pointsInClusters[curAssignment].emplace_back(nodes[i]);
+            tables[curAssignment][localIndices[curAssignment]] = i;
+            ++localIndices[curAssignment];
         }
-        graph::print_path(p, "Path");
-        graph::print_path(p_global, "Path (Global)");
-        std::println("Cost: {:.3f}", c); // a precision of 2 decimal places
+
+        size_t groupIdx = 0;
+        std::set<size_t> visited;
+        for (auto points : pointsInClusters)
+        {
+            auto g = create_graph(points);
+            auto [p, c] = solver::DFS(g);
+            std::cout << "Cluster # " << groupIdx << std::endl;
+            std::vector<size_t> p_global(p);
+            for (size_t i = 0; i < p.size(); ++i)
+            {
+                visited.insert(tables[groupIdx][p[i]]);
+                p_global[i] = tables[groupIdx][p[i]];
+            }
+            graph::print_path(p_global, "Path");
+            std::println("Cost: {:.3f}", c); // a precision of 2 decimal places
+            ++groupIdx;
+        }
+
+        std::cout << "Visited list:\n";
+        for (auto& v : visited)
+        {
+            std::cout << v << "\n";
+        }
     }
 
     // travels from the start point to the start cluster
