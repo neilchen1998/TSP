@@ -271,22 +271,26 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
 {
     const size_t N = nodes.size();
     const size_t T = K * 15;
+    double totalCost = 0.0;
 
     // calls the functions T times and picks the results that has the lowest variance value
-    std::vector<double> vars(T, constants::INF);
-    std::vector<std::vector<graph::Coordinate>> rets(T);
-    for (size_t i = 0; i < T; ++i)
+    std::vector<graph::Coordinate> bestClusters;
     {
-        auto [a, b] = k_means(nodes, K, 500);
-        rets[i] = a;
-        vars[i] = b;
+        std::vector<double> vars(T, constants::INF);
+        std::vector<std::vector<graph::Coordinate>> rets(T);
+        for (size_t i = 0; i < T; ++i)
+        {
+            auto [a, b] = k_means(nodes, K, 500);
+            rets[i] = a;
+            vars[i] = b;
+        }
+
+        // finds the best clustering by finding the group that has the smallest variance
+        auto itr = std::min_element(vars.cbegin(), vars.cend());
+        bestClusters = *(rets.begin() + (itr - vars.cbegin()));
     }
 
-    // finds the best clustering by finding the group that has the smallest variance
-    auto itr = std::min_element(vars.cbegin(), vars.cend());
-    auto bestClusters = *(rets.begin() + (itr - vars.cbegin()));
-
-     std::cout << "Centroids from calling K Means function:\n";
+    std::cout << "Centroids from calling K Means function:\n";
     for (auto& c : bestClusters)
     {
         std::print("({}, {})\t", c.x, c.y);
@@ -301,6 +305,7 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
 
     graph::print_path(path, "Path");
     std::println("Cost: {:.3f}", cost); // a precision of 2 decimal places
+    totalCost += cost;
 
     // travels within each cluster
 
@@ -308,5 +313,5 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
 
     // travels from the end cluster to the end point
 
-    return {{}, constants::INF};
+    return {{}, totalCost};
 }
