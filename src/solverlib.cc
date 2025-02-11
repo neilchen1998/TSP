@@ -273,6 +273,7 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
     const size_t N = nodes.size();
     const size_t T = K * 15;
     double totalCost = 0.0;
+    std::vector<size_t> totalPath;
 
     std::vector<size_t> assignments(N);
 
@@ -327,7 +328,7 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
     #endif
 
     // travels within each cluster
-    std::vector<std::vector<size_t>> paths;
+    std::vector<std::vector<size_t>> paths(K);
     {
         // each table entails how to convert a local index back to its global index
         // key: local index, value: global index
@@ -372,6 +373,8 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
                     p_global[i] = tables[groupIdx][p[i]];
                 }
 
+                paths[groupIdx] = p_global;
+                totalCost += c;
                 ++groupIdx;
 
                 #if DEBUG
@@ -386,15 +389,23 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
         std::cout << "Visited list:\n";
         for (auto& v : visited)
         {
-            std::cout << v << "\n";
+            std::cout << v << ", ";
         }
+        std::cout << std::endl;
         #endif
     }
 
-    // travels from the start point to the start cluster
+    // inserts the path within each cluster
+    for (auto& p : paths)
+    {
+        totalPath.insert(totalPath.end(), p.begin(), p.end());
+    }
 
+    // travels from the start point to the start cluster
+    totalCost += distance(nodes.front(), bestClusters[path.front()]);
 
     // travels from the end cluster to the end point
+    totalCost += distance(nodes.front(), bestClusters[path.back()]);
 
-    return {{}, totalCost};
+    return {totalPath, totalCost};
 }
