@@ -293,21 +293,25 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
         bestClusters = *(rets.begin() + (itr - vars.cbegin()));
     }
 
+    #if DEBUG
     std::cout << "Centroids from calling K Means function:\n";
     for (auto& c : bestClusters)
     {
         std::print("({}, {})\t", c.x, c.y);
     }
     std::cout << "\n";
+    #endif
 
     // the index of the cluster of the start point
     size_t startIdx = assignments.front();
 
+    #if DEBUG
     std::println("Assignment:");
     for (size_t i = 0; i < N; ++i)
     {
         std::println("# {}: {}", i, assignments[i]);
     }
+    #endif
 
     #if DEBUG
     std::println("Start idx: {}", startIdx);
