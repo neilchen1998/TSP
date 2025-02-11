@@ -14,6 +14,7 @@ function help()
     printf "  -r, --run       Build in Release mode and run the app\n"
     printf "  -b, --build     Build only in Release mode\n"
     printf "  -t, --test      Build and run tests\n"
+    printf "  -T, --TEST      Build in debug mode and run tests\n"
     printf "  -m, --mode <mode> Build in specified mode (e.g., -m Debug)\n"
 }
 
