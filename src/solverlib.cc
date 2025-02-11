@@ -13,8 +13,10 @@
 #include <boost/dynamic_bitset.hpp>     // boost::dynamic_bitset
 
 #include "math/mathlib.hpp"
-#include "constant/constantlib.hpp"     // constants::INF
-#include "graph/nodelib.hpp"            // graph::Node
+#include "constant/constantlib.hpp" // constants::INF
+#include "graph/nodelib.hpp"        // graph::Node
+#include "filesystem/loadlib.hpp"   // create_graph
+#include "graph/visualizerlib.hpp"  // graph::print_graph
 
 #if DEBUG
 #include "graph/visualizerlib.hpp"
@@ -265,11 +267,46 @@ std::tuple<std::vector<size_t>, double> graph::solver::DFS(const std::vector<std
     return dfs(graph, visited, 0, path);
 }
 
-std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const std::vector<graph::Coordinate>& nodes, const std::vector<std::vector<double>> &graph, size_t k)
+std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const std::vector<graph::Coordinate>& nodes, const std::vector<std::vector<double>> &graph, size_t K)
 {
-    const size_t N = graph.size();
+    const size_t N = nodes.size();
+    const size_t T = K * 15;
 
-    auto clusters = k_means(nodes, 10, 20);
+    // calls the functions T times and picks the results that has the lowest variance value
+    std::vector<double> vars(T, constants::INF);
+    std::vector<std::vector<graph::Coordinate>> rets(T);
+    for (size_t i = 0; i < T; ++i)
+    {
+        auto [a, b] = k_means(nodes, K, 500);
+        rets[i] = a;
+        vars[i] = b;
+    }
+
+    // finds the best clustering by finding the group that has the smallest variance
+    auto itr = std::min_element(vars.cbegin(), vars.cend());
+    auto bestClusters = *(rets.begin() + (itr - vars.cbegin()));
+
+     std::cout << "Centroids from calling K Means function:\n";
+    for (auto& c : bestClusters)
+    {
+        std::print("({}, {})\t", c.x, c.y);
+    }
+    std::cout << "\n";
+
+    // converts clusters to graph
+    auto clusterGraph = create_graph(bestClusters);
+
+    // travels among the clusters
+    auto [path, cost] = solver::DFS(clusterGraph);
+
+    graph::print_path(path, "Path");
+    std::println("Cost: {:.3f}", cost); // a precision of 2 decimal places
+
+    // travels within each cluster
+
+    // travels from the start point to the start cluster
+
+    // travels from the end cluster to the end point
 
     return {{}, constants::INF};
 }
