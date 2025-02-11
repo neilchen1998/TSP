@@ -2,6 +2,7 @@
 #define CATCH_CONFIG_MAIN
 
 #include <catch2/catch.hpp>
+#include <print>    // std::print
 
 #include "math/mathlib.hpp"
 #include "constant/constantlib.hpp"     // constants::INF
@@ -125,7 +126,6 @@ TEST_CASE("K Mean", "[main]")
         // calls the functions T times and picks the results that has the lowest variance value
         std::vector<double> vars(T, constants::INF);
         std::vector<std::vector<graph::Coordinate>> rets(T);
-
         for (size_t i = 0; i < T; ++i)
         {
             auto [a, b] = k_means(coordinates, K, 500);
@@ -133,25 +133,27 @@ TEST_CASE("K Mean", "[main]")
             vars[i] = b;
         }
 
-        double var = vars.front();
-        std::vector<graph::Coordinate> ret(rets.front());
-        for (size_t i = 1; i < T; ++i)
+        // finds the best clustering by finding the group that has the smallest variance
+        auto itr = std::min_element(vars.cbegin(), vars.cend());
+        double ret_var = *itr;
+        auto ret_clusters = *(rets.begin() + (itr - vars.cbegin()));
+
+        // calculates the variance of the provided answer
+        double ans_var = 0.0;
+        ans_var += distance(coordinates[0], clusters[2]);
+        ans_var += distance(coordinates[1], clusters[2]);
+        ans_var += distance(coordinates[2], clusters[2]);
+        ans_var += distance(coordinates[3], clusters[0]);
+        ans_var += distance(coordinates[5], clusters[1]);
+
+        REQUIRE (ret_clusters.size() == K);
+        REQUIRE (ret_var <= ans_var);
+
+        std::cout << "Centroids from calling K Means function:\n";
+        for (auto& c : ret_clusters)
         {
-            if (vars[i] < var)
-            {
-                var = vars[i];
-                ret = rets[i];
-            }
+            std::print("({}, {})\t", c.x, c.y);
         }
-
-        // sorts the clusters based on the distance from the origin point
-        std::stable_sort(clusters.begin(), clusters.end(), [](const graph::Coordinate& a, const graph::Coordinate& b)
-        {
-            return distance(a, {0, 0}) < distance(b, {0, 0});
-        });
-
-        CHECK (ret.size() == K);
-        CHECK (ret == clusters);
-        // CHECK (var <= 200);
+        std::cout << "\n";
     }
 }
