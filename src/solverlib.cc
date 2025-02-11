@@ -301,18 +301,21 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
     }
     std::cout << "\n";
 
-    // the index of the start point
+    // the index of the cluster of the start point
     size_t startIdx = assignments.front();
+
+    std::println("Assignment:");
+    for (size_t i = 0; i < N; ++i)
+    {
+        std::println("# {}: {}", i, assignments[i]);
+    }
 
     #if DEBUG
     std::println("Start idx: {}", startIdx);
     #endif
 
     // makes the cluster that has the start point to be in the first element since we need to start from that cluster
-    if (startIdx != 0)
-    {
-        std::swap(bestClusters[0], bestClusters[startIdx]);
-    }
+    std::swap(bestClusters[0], bestClusters[startIdx]);
 
     // converts clusters to graph
     auto clusterGraph = create_graph(bestClusters);
@@ -321,7 +324,7 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
     auto [path, cost] = solver::DFS(clusterGraph);
     totalCost += cost;
 
-    #if DEBUG
+    #if 1
     std::cout << "Among clusters:\n";
     graph::print_path(path, "Path");
     std::println("Cost: {:.3f}", cost); // a precision of 2 decimal places
@@ -350,7 +353,7 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
             ++localIndices[curAssignment];
         }
 
-        #if DEBUG
+        #if 1
         std::cout << "size of each cluster:\n";
         for (size_t i = 0; i < K; ++i)
         {
@@ -377,8 +380,8 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
                 totalCost += c;
                 ++groupIdx;
 
-                #if DEBUG
-                std::cout << "Cluster # " << groupIdx << std::endl;
+                #if 1
+                std::cout << "Cluster # " << (groupIdx - 1) << std::endl;
                 graph::print_path(p_global, "Path");
                 std::println("Cost: {:.3f}", c); // a precision of 2 decimal places
                 #endif
@@ -398,6 +401,8 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
     }
 
     // inserts the path within each cluster
+    // makes the cluster that has the start point to be in the first element since we need to start from that cluster
+    std::swap(paths[startIdx], paths[0]);
     for (auto& p : paths)
     {
         totalPath.insert(totalPath.end(), p.begin(), p.end());
