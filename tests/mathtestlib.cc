@@ -172,7 +172,7 @@ TEST_CASE("K Mean", "[main]")
         };
 
         const size_t K = clusters.size();
-        const size_t T = 10;
+        const size_t T = 50;
         const size_t N0 = 3;
         const size_t N1 = 1;
         const size_t N2 = 5;
