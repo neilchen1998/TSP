@@ -3,6 +3,7 @@
 
 #include <catch2/catch.hpp>
 #include <print>    // std::print
+#include <random>
 
 #include "math/mathlib.hpp"
 #include "constant/constantlib.hpp"     // constants::INF
@@ -149,11 +150,115 @@ TEST_CASE("K Mean", "[main]")
         REQUIRE (ret_clusters.size() == K);
         REQUIRE (ret_var <= ans_var);
 
+        #if DEBUG
         std::cout << "Centroids from calling K Means function:\n";
         for (auto& c : ret_clusters)
         {
             std::print("({}, {})\t", c.x, c.y);
         }
         std::cout << "\n";
+        #endif
+    }
+
+    SECTION ("5 Clusters", "[main]")
+    {
+        std::vector<graph::Coordinate> clusters =
+        {
+            {20, 10},
+            {2, 110},
+            {60, 180},
+            {580, 600},
+            {1100, 2000}
+        };
+
+        const size_t K = clusters.size();
+        const size_t T = 10;
+        const size_t N0 = 3;
+        const size_t N1 = 1;
+        const size_t N2 = 5;
+        const size_t N3 = 12;
+        const size_t N4 = 8;
+        const size_t Ns[] = {N0, N1, N2, N3, N4};
+        const size_t N = N0 + N1 + N2 + N3 + N4;
+
+        std::vector<graph::Coordinate> coordinates;
+
+        // creates the generator
+        std::random_device rd{};
+        std::mt19937 gen{rd()};
+
+        // creates normal distributions
+        std::vector<std::normal_distribution<double>> distXs;
+        std::vector<std::normal_distribution<double>> distYs;
+        for (size_t i = 0; i < K; ++i)
+        {
+            distXs.emplace_back(clusters[i].x, 2.0);
+            distYs.emplace_back(clusters[i].y, 2.0);
+        }
+
+        size_t idx = 0;
+        for (size_t i = 0; i < N0; ++i)
+        {
+            coordinates.emplace_back(distXs[idx](gen), distYs[idx](gen));
+        }
+        ++idx;
+        for (size_t i = 0; i < N1; ++i)
+        {
+            coordinates.emplace_back(distXs[idx](gen), distYs[idx](gen));
+        }
+        ++idx;
+        for (size_t i = 0; i < N2; ++i)
+        {
+            coordinates.emplace_back(distXs[idx](gen), distYs[idx](gen));
+        }
+        ++idx;
+        for (size_t i = 0; i < N3; ++i)
+        {
+            coordinates.emplace_back(distXs[idx](gen), distYs[idx](gen));
+        }
+        ++idx;
+        for (size_t i = 0; i < N4; ++i)
+        {
+            coordinates.emplace_back(distXs[idx](gen), distYs[idx](gen));
+        }
+
+        // calls the functions T times and picks the results that has the lowest variance value
+        std::vector<double> vars(T, constants::INF);
+        std::vector<std::vector<graph::Coordinate>> rets(T);
+        for (size_t i = 0; i < T; ++i)
+        {
+            auto [a, b] = k_means(coordinates, K, 500);
+            rets[i] = a;
+            vars[i] = b;
+        }
+
+        // finds the best clustering by finding the group that has the smallest variance
+        auto itr = std::min_element(vars.cbegin(), vars.cend());
+        double ret_var = *itr;
+        auto ret_clusters = *(rets.begin() + (itr - vars.cbegin()));
+
+        // calculates the variance of the provided answer
+        double ans_var = 0.0;
+        for (size_t i = 0, idx = 0; i < clusters.size(); ++i)
+        {
+            for (size_t j = 0; j < Ns[i]; ++j)
+            {
+                ans_var += distance(coordinates[idx + j], clusters[i]);
+            }
+            idx += Ns[i];
+        }
+
+        REQUIRE (coordinates.size() == N);
+        REQUIRE (ret_clusters.size() == K);
+        REQUIRE (ret_var <= ans_var);
+
+        #if DEBUG
+        std::cout << "Centroids from calling K Means function:\n";
+        for (auto& c : ret_clusters)
+        {
+            std::print("({}, {})\t", c.x, c.y);
+        }
+        std::cout << "\n";
+        #endif
     }
 }
