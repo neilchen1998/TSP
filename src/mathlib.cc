@@ -264,8 +264,6 @@ std::vector<graph::Coordinate> k_means(const std::vector<graph::Coordinate>& coo
     }
     #endif
 
-    }
-
     // returns the centroids of the clusters
     return clusters;
 }
