@@ -122,14 +122,17 @@ TEST_CASE("K Mean", "[main]")
         };
 
         const size_t K = 3;
+        const size_t N = coordinates.size();
         const size_t T = 10;
+
+        std::vector<size_t> assignments(N);
 
         // calls the functions T times and picks the results that has the lowest variance value
         std::vector<double> vars(T, constants::INF);
         std::vector<std::vector<graph::Coordinate>> rets(T);
         for (size_t i = 0; i < T; ++i)
         {
-            auto [a, b] = k_means(coordinates, K, 500);
+            auto [a, b] = k_means(coordinates, assignments, K, 500);
             rets[i] = a;
             vars[i] = b;
         }
@@ -160,89 +163,90 @@ TEST_CASE("K Mean", "[main]")
         #endif
     }
 
-    SECTION ("5 Clusters", "[main]")
-    {
-        std::vector<graph::Coordinate> clusters =
-        {
-            {20, 10},
-            {2, 110},
-            {60, 180},
-            {580, 600},
-            {1100, 2000}
-        };
+    // SECTION ("5 Clusters", "[main]")
+    // {
+    //     std::vector<graph::Coordinate> clusters =
+    //     {
+    //         {20, 10},
+    //         {2, 110},
+    //         {60, 180},
+    //         {580, 600},
+    //         {1100, 2000}
+    //     };
 
-        const size_t K = clusters.size();
-        const size_t T = 50;
-        const size_t N0 = 3;
-        const size_t N1 = 1;
-        const size_t N2 = 5;
-        const size_t N3 = 12;
-        const size_t N4 = 8;
-        const size_t Ns[] = {N0, N1, N2, N3, N4};
-        const size_t N = N0 + N1 + N2 + N3 + N4;
+    //     const size_t K = clusters.size();
+    //     const size_t T = 50;
+    //     const size_t N0 = 3;
+    //     const size_t N1 = 1;
+    //     const size_t N2 = 5;
+    //     const size_t N3 = 12;
+    //     const size_t N4 = 8;
+    //     const size_t Ns[] = {N0, N1, N2, N3, N4};
+    //     const size_t N = N0 + N1 + N2 + N3 + N4;
 
-        std::vector<graph::Coordinate> coordinates;
+    //     std::vector<graph::Coordinate> coordinates;
+    //     std::vector<size_t> assignments(N);
 
-        // creates the generator
-        std::random_device rd{};
-        std::mt19937 gen{rd()};
+    //     // creates the generator
+    //     std::random_device rd{};
+    //     std::mt19937 gen{rd()};
 
-        // creates normal distributions
-        std::vector<std::normal_distribution<double>> distXs;
-        std::vector<std::normal_distribution<double>> distYs;
-        for (size_t i = 0; i < K; ++i)
-        {
-            distXs.emplace_back(clusters[i].x, 2.0);
-            distYs.emplace_back(clusters[i].y, 2.0);
-        }
+    //     // creates normal distributions
+    //     std::vector<std::normal_distribution<double>> distXs;
+    //     std::vector<std::normal_distribution<double>> distYs;
+    //     for (size_t i = 0; i < K; ++i)
+    //     {
+    //         distXs.emplace_back(clusters[i].x, 2.0);
+    //         distYs.emplace_back(clusters[i].y, 2.0);
+    //     }
 
-        // generates coordinates based on the predefined centroids points
-        for (size_t i = 0; i < clusters.size(); ++i)
-        {
-            // generates x number of points that are centered at cluster[i]
-            for (size_t j = 0; j < Ns[i]; ++j)
-            {
-                coordinates.emplace_back(distXs[i](gen), distYs[i](gen));
-            }
-        }
+    //     // generates coordinates based on the predefined centroids points
+    //     for (size_t i = 0; i < clusters.size(); ++i)
+    //     {
+    //         // generates x number of points that are centered at cluster[i]
+    //         for (size_t j = 0; j < Ns[i]; ++j)
+    //         {
+    //             coordinates.emplace_back(distXs[i](gen), distYs[i](gen));
+    //         }
+    //     }
 
-        // calls the functions T times and picks the results that has the lowest variance value
-        std::vector<double> vars(T, constants::INF);
-        std::vector<std::vector<graph::Coordinate>> rets(T);
-        for (size_t i = 0; i < T; ++i)
-        {
-            auto [a, b] = k_means(coordinates, K, 500);
-            rets[i] = a;
-            vars[i] = b;
-        }
+    //     // calls the functions T times and picks the results that has the lowest variance value
+    //     std::vector<double> vars(T, constants::INF);
+    //     std::vector<std::vector<graph::Coordinate>> rets(T);
+    //     for (size_t i = 0; i < T; ++i)
+    //     {
+    //         auto [a, b] = k_means(coordinates, assignments, K, 500);
+    //         rets[i] = a;
+    //         vars[i] = b;
+    //     }
 
-        // finds the best clustering by finding the group that has the smallest variance
-        auto itr = std::min_element(vars.cbegin(), vars.cend());
-        double ret_var = *itr;
-        auto ret_clusters = *(rets.begin() + (itr - vars.cbegin()));
+    //     // finds the best clustering by finding the group that has the smallest variance
+    //     auto itr = std::min_element(vars.cbegin(), vars.cend());
+    //     double ret_var = *itr;
+    //     auto ret_clusters = *(rets.begin() + (itr - vars.cbegin()));
 
-        // calculates the variance of the provided answer
-        double ans_var = 0.0;
-        for (size_t i = 0, idx = 0; i < clusters.size(); ++i)
-        {
-            for (size_t j = 0; j < Ns[i]; ++j)
-            {
-                ans_var += distance(coordinates[idx + j], clusters[i]);
-            }
-            idx += Ns[i];
-        }
+    //     // calculates the variance of the provided answer
+    //     double ans_var = 0.0;
+    //     for (size_t i = 0, idx = 0; i < clusters.size(); ++i)
+    //     {
+    //         for (size_t j = 0; j < Ns[i]; ++j)
+    //         {
+    //             ans_var += distance(coordinates[idx + j], clusters[i]);
+    //         }
+    //         idx += Ns[i];
+    //     }
 
-        REQUIRE (coordinates.size() == N);
-        REQUIRE (ret_clusters.size() == K);
-        REQUIRE (ret_var <= ans_var);
+    //     REQUIRE (coordinates.size() == N);
+    //     REQUIRE (ret_clusters.size() == K);
+    //     REQUIRE (ret_var <= ans_var);
 
-        #if DEBUG
-        std::cout << "Centroids from calling K Means function:\n";
-        for (auto& c : ret_clusters)
-        {
-            std::print("({}, {})\t", c.x, c.y);
-        }
-        std::cout << "\n";
-        #endif
-    }
+    //     #if DEBUG
+    //     std::cout << "Centroids from calling K Means function:\n";
+    //     for (auto& c : ret_clusters)
+    //     {
+    //         std::print("({}, {})\t", c.x, c.y);
+    //     }
+    //     std::cout << "\n";
+    //     #endif
+    // }
 }

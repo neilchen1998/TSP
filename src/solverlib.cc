@@ -273,6 +273,8 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
     const size_t T = K * 15;
     double totalCost = 0.0;
 
+    std::vector<size_t> assignments(N);
+
     // calls the functions T times and picks the results that has the lowest variance value
     std::vector<graph::Coordinate> bestClusters;
     {
@@ -280,7 +282,7 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
         std::vector<std::vector<graph::Coordinate>> rets(T);
         for (size_t i = 0; i < T; ++i)
         {
-            auto [a, b] = k_means(nodes, K, 500);
+            auto [a, b] = k_means(nodes, assignments, K, 500);
             rets[i] = a;
             vars[i] = b;
         }
@@ -302,12 +304,41 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
 
     // travels among the clusters
     auto [path, cost] = solver::DFS(clusterGraph);
-
+    std::cout << "Among clusters:\n";
     graph::print_path(path, "Path");
     std::println("Cost: {:.3f}", cost); // a precision of 2 decimal places
     totalCost += cost;
 
     // travels within each cluster
+    std::vector<std::vector<size_t>> paths;
+    {
+        std::unordered_map<size_t, size_t> m;    // key: local index, value: global index
+        std::vector<graph::Coordinate> co;
+        size_t i = 0, j = 0;
+        for (auto& assignment : assignments)
+        {
+            std::println("#{}: {}", i, assignment);
+            if (assignment == 4)
+            {
+                co.emplace_back(nodes[i]);
+                m[j] = i;
+                ++j;
+            }
+            ++i;
+        }
+        auto g = create_graph(co);
+        auto [p, c] = solver::DFS(g);
+
+        std::cout << "Cluster #4\n";
+        std::vector<size_t> p_global(p);
+        for (size_t i = 0; i < p.size(); ++i)
+        {
+            p_global[i] = m[p[i]];
+        }
+        graph::print_path(p, "Path");
+        graph::print_path(p_global, "Path (Global)");
+        std::println("Cost: {:.3f}", c); // a precision of 2 decimal places
+    }
 
     // travels from the start point to the start cluster
 

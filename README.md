@@ -1,6 +1,16 @@
 # Travelling Salesman Problem
 
-This project attempts to solve the famous travelling salesman problem.
+This project attempts to solve the famous travelling salesman problem with a list of algorithms.
+
+## Algorithms
+
+* Brute force
+
+* Branch and Bound
+
+* Depth First Search
+
+* Divide and Conquer
 
 ## Requirements
 
@@ -88,7 +98,6 @@ To build docs (requires Doxygen, output in `build/docs/html`):
 ```bash
 cmake --build build --target docs
 ```
-
 
 ## Reference
 
