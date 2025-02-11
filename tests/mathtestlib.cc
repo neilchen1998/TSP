@@ -144,6 +144,12 @@ TEST_CASE("K Mean", "[main]")
             }
         }
 
+        // sorts the clusters based on the distance from the origin point
+        std::stable_sort(clusters.begin(), clusters.end(), [](const graph::Coordinate& a, const graph::Coordinate& b)
+        {
+            return distance(a, {0, 0}) < distance(b, {0, 0});
+        });
+
         CHECK (ret.size() == K);
         CHECK (ret == clusters);
         // CHECK (var <= 200);

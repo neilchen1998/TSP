@@ -244,12 +244,6 @@ std::tuple<std::vector<graph::Coordinate>, double> k_means(const std::vector<gra
         ++cnt;
     }
 
-    // sorts the clusters based on the distance from the origin point
-    std::stable_sort(clusters.begin(), clusters.end(), [](const graph::Coordinate& a, const graph::Coordinate& b)
-    {
-        return std::hypot(a.x, a.y) < std::hypot(b.x, b.y);
-    });
-
     #if DEBUG
     std::cout << "\n";
     fmt::println("Clusters:");
