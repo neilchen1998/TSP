@@ -385,13 +385,15 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
             }
         }
 
-        #if DEBUG
-        std::cout << "Visited list:\n";
-        for (auto& v : visited)
+        #if 1
+        if (visited.size() < N)
         {
-            std::cout << v << ", ";
+            std::cerr << "Error: Not all nodes have been visited!\n";
         }
-        std::cout << std::endl;
+        else if (visited.size() > N)
+        {
+            std::cerr << "Error: Visited " << visited.size() << "more nodes than supposed to!\n";
+        }
         #endif
     }
 
@@ -406,6 +408,17 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
 
     // travels from the end cluster to the end point
     totalCost += distance(nodes.front(), bestClusters[path.back()]);
+
+    double trueCost = 0.0;
+    for (size_t i = 0; i < N - 1; ++i)
+    {
+        trueCost += graph[i][i + 1];
+    }
+    trueCost += graph[N - 1][0];
+
+    #if 1
+    std::println("True cost: {}", trueCost);
+    #endif
 
     return {totalPath, totalCost};
 }
