@@ -272,7 +272,6 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
 {
     const size_t N = nodes.size();
     const size_t T = K * 15;
-    double totalCost = 0.0;
     std::vector<size_t> totalPath;
 
     std::vector<size_t> assignments(N);
@@ -322,9 +321,8 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
 
     // travels among the clusters
     auto [path, cost] = solver::DFS(clusterGraph);
-    totalCost += cost;
 
-    #if 1
+    #if DEBUG
     std::cout << "Among clusters:\n";
     graph::print_path(path, "Path");
     std::println("Cost: {:.3f}", cost); // a precision of 2 decimal places
@@ -353,7 +351,7 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
             ++localIndices[curAssignment];
         }
 
-        #if 1
+        #if DEBUG
         std::cout << "size of each cluster:\n";
         for (size_t i = 0; i < K; ++i)
         {
@@ -376,26 +374,14 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
                 }
 
                 paths[i] = p_global;
-                totalCost += c;
 
-                #if 1
+                #if DEBUG
                 std::cout << "Cluster # " << i << std::endl;
                 graph::print_path(p_global, "Path");
                 std::println("Cost: {:.3f}", c); // a precision of 2 decimal places
                 #endif
             }
         }
-
-        #if 1
-        if (visited.size() < N)
-        {
-            std::cerr << "Error: Not all nodes have been visited!\n";
-        }
-        else if (visited.size() > N)
-        {
-            std::cerr << "Error: Visited " << visited.size() << "more nodes than supposed to!\n";
-        }
-        #endif
     }
 
     // inserts the path within each cluster
@@ -406,22 +392,14 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
         totalPath.insert(totalPath.end(), p.begin(), p.end());
     }
 
-    // travels from the start point to the start cluster
-    totalCost += distance(nodes.front(), bestClusters[path.front()]);
-
-    // travels from the end cluster to the end point
-    totalCost += distance(nodes.front(), bestClusters[path.back()]);
-
     double trueCost = 0.0;
-    for (size_t i = 0; i < N - 1; ++i)
+    size_t u, v;
+    for (size_t i = 0; i < N; ++i)
     {
-        trueCost += graph[i][i + 1];
+        u = totalPath[i];
+        v = totalPath[(i + 1) % N];
+        trueCost += graph[u][v];
     }
-    trueCost += graph[N - 1][0];
 
-    #if 1
-    std::println("True cost: {}", trueCost);
-    #endif
-
-    return {totalPath, totalCost};
+    return {totalPath, trueCost};
 }
