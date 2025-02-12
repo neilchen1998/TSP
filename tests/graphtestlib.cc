@@ -256,4 +256,71 @@ TEST_CASE("Divide and Conquer", "[main]")
 
         CHECK (ret_cost == ans_cost);
     }
+
+    SECTION ("Solver", "[main]")
+    {
+        // source: https://developers.google.com/optimization/routing/tsp#c++
+        // New York: 40.7128° N, 74.0060° W
+        // Los Angeles: 34.0522° N, 118.2437° W
+        // Chicago: 41.8781° N, 87.6298° W
+        // Minneapolis: 44.9800° N, 93.2638° W
+        // Denver: 39.7392° N, 104.9903° W
+        // Dallas: 32.7157° N, 96.7989° W
+        // Seattle: 47.6062° N, 122.3321° W
+        // Boston: 42.3601° N, 71.0589° W
+        // San Francisco: 37.7749° N, 122.4194° W
+        // St. Louis: 38.6270° N, 90.1994° W
+        // Houston: 29.7604° N, 95.3698° W
+        // Phoenix: 33.4484° N, 112.0740° W
+        // Salt Lake City: 40.7608° N, 111.8923° W
+        // since those cities are all located in the north western part of the world, those coordinates are simplified as x-y coordinates
+        const std::vector<graph::Coordinate> nodes {
+            {40.7128, 74.0060},
+            {34.0522, 118.2437},
+            {41.8781, 87.6298},
+            {44.9800, 93.2638},
+            {39.7392, 104.9903},
+            {32.7157, 96.7989},
+            {47.6062, 122.3321},
+            {42.3601, 71.0589},
+            {37.7749, 122.4194},
+            {38.6270, 90.1994},
+            {29.7604, 95.3698},
+            {33.4484, 112.0740},
+            {40.7608, 111.8923}
+        };
+
+        const auto graph = create_graph(nodes);
+
+        const size_t N = nodes.size();
+
+        // this is the first row of the distance matrix from the original data
+        const std::vector<double> original_distance ({
+            0, 2451, 713, 1018, 1631, 1374, 2408, 213, 2571, 875, 1420, 2145, 1972
+        });
+
+        // calculates the average factor since the original data must have calculated with the curvature in mind
+        // whereas the distance matrix that are calculated by using Euclidean distance
+        double factor = 0.0;
+        for (size_t i = 1; i < N; ++i)
+        {
+            factor += (graph.front()[i] / original_distance[i]);
+        }
+        factor /= (N - 1);
+        
+        auto [ret_path, ret_cost] = graph::solver::divide_n_conquer(nodes, graph, 5);
+
+        // makes sure all nodes have been visited
+        REQUIRE (ret_path.size() == N);
+        std::unordered_set<size_t> ret_visited;
+        const auto ans_visited = create_visited_set(N);
+        for (auto& p : ret_path)
+        {
+            ret_visited.insert(p);
+        }
+        REQUIRE (ret_visited == ans_visited);
+
+        // checks if the cost calculated by solver::divide_n_conquer is within 20%
+        CHECK (ret_cost <= 7293 * factor * 1.2);
+    }
 }
