@@ -363,7 +363,6 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
         }
         #endif
 
-        std::set<size_t> visited;
         for (size_t i = 0; i < K; ++i)
         {
             if (pointsInClusters[i].size() > 0)
@@ -373,7 +372,6 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
                 std::vector<size_t> p_global(p);
                 for (size_t j = 0; j < p.size(); ++j)
                 {
-                    visited.insert(tables[i][p[j]]);
                     p_global[j] = tables[i][p[j]];
                 }
 

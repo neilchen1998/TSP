@@ -2,9 +2,25 @@
 
 #include <catch2/catch.hpp>
 #include <vector>   // std::vector
+#include <unordered_set>    // std::unordered_set
+#include <numeric>    // std::iota
 
 #include "constant/constantlib.hpp"     // constants::INF
 #include "graph/solverlib.hpp"
+#include "filesystem/loadlib.hpp"   // create_graph
+
+/// @brief Create an unordered set that has elements from 0 to (N - 1)
+/// @param N The total number of elements
+/// @return An unordered set that has all the elmeents from 0 to (N - 1)
+inline std::unordered_set<size_t> create_visited_set(const size_t N)
+{
+    std::unordered_set<size_t> visited;
+    std::vector<int> l(N);
+    std::iota(l.begin(), l.end(), 0);
+    visited.insert(l.begin(), l.end());
+
+    return visited;
+}
 
 TEST_CASE("Brute Force", "[main]")
 {
@@ -209,6 +225,35 @@ TEST_CASE("Dynamic Programming", "[main]")
         const double ans_cost = 28;
         auto [ret_path, ret_cost] = graph::solver::DFS(graph);
         CHECK (ret_path == ans_path);
+        CHECK (ret_cost == ans_cost);
+    }
+}
+
+TEST_CASE("Divide and Conquer", "[main]")
+{
+    SECTION ("Solver", "[main]")
+    {
+        const std::vector<graph::Coordinate> nodes {
+            {40.7128, 74.0060},
+            {34.0522, 118.2437},
+            {41.8781, 87.6298},
+            {44.9800, 93.2638}
+        };
+        const size_t N = nodes.size();
+        const auto graph = create_graph(nodes);
+        auto [ans_path, ans_cost] = graph::solver::DFS(graph);
+        auto [ret_path, ret_cost] = graph::solver::divide_n_conquer(nodes, graph, 2);
+
+        // makes sure all nodes have been visited
+        REQUIRE (ans_path.size() == N);
+        std::unordered_set<size_t> ret_visited;
+        const auto ans_visited = create_visited_set(N);
+        for (auto& p : ret_path)
+        {
+            ret_visited.insert(p);
+        }
+        REQUIRE (ret_visited == ans_visited);
+
         CHECK (ret_cost == ans_cost);
     }
 }
