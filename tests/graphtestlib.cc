@@ -245,7 +245,7 @@ TEST_CASE("Divide and Conquer", "[main]")
         auto [ret_path, ret_cost] = graph::solver::divide_n_conquer(nodes, graph, 2);
 
         // makes sure all nodes have been visited
-        REQUIRE (ans_path.size() == N);
+        REQUIRE (ret_path.size() == N);
         std::unordered_set<size_t> ret_visited;
         const auto ans_visited = create_visited_set(N);
         for (auto& p : ret_path)
