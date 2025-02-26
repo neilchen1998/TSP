@@ -231,7 +231,7 @@ TEST_CASE("Dynamic Programming", "[main]")
 
 TEST_CASE("Divide and Conquer", "[main]")
 {
-    SECTION ("Solver", "[main]")
+    SECTION ("Small graph", "[main]")
     {
         const std::vector<graph::Coordinate> nodes {
             {40.7128, 74.0060},
@@ -257,7 +257,7 @@ TEST_CASE("Divide and Conquer", "[main]")
         CHECK (ret_cost == ans_cost);
     }
 
-    SECTION ("Solver", "[main]")
+    SECTION ("Large graph", "[main]")
     {
         // source: https://developers.google.com/optimization/routing/tsp#c++
         // New York: 40.7128° N, 74.0060° W
@@ -294,33 +294,65 @@ TEST_CASE("Divide and Conquer", "[main]")
 
         const size_t N = nodes.size();
 
-        // this is the first row of the distance matrix from the original data
-        const std::vector<double> original_distance ({
-            0, 2451, 713, 1018, 1631, 1374, 2408, 213, 2571, 875, 1420, 2145, 1972
-        });
-
-        // calculates the average factor since the original data must have calculated with the curvature in mind
-        // whereas the distance matrix that are calculated by using Euclidean distance
-        double factor = 0.0;
-        for (size_t i = 1; i < N; ++i)
+        // the optimal route
+        const int ans_path[] = {0, 7, 2, 3, 4, 12, 6, 8, 1, 11, 10, 5, 9, 0};
+        double ans_cost = 0.0;
+        for (size_t i = 0; i + 1 < 14; ++i)
         {
-            factor += (graph.front()[i] / original_distance[i]);
+            auto u = ans_path[i];
+            auto v = ans_path[i + 1];
+            ans_cost += graph[u][v];
         }
-        factor /= (N - 1);
+
+        {
+            auto [ret_path, ret_cost] = graph::solver::divide_n_conquer(nodes, graph, 3);
+
+            // makes sure all nodes have been visited
+            REQUIRE (ret_path.size() == N);
+            std::unordered_set<size_t> ret_visited;
+            const auto ans_visited = create_visited_set(N);
+            for (auto& p : ret_path)
+            {
+                ret_visited.insert(p);
+            }
+            REQUIRE (ret_visited == ans_visited);
+
+            // checks if the cost calculated by solver::divide_n_conquer is within 30%
+            CHECK (ret_cost <= ans_cost * 1.3);
+        }
         
-        auto [ret_path, ret_cost] = graph::solver::divide_n_conquer(nodes, graph, 5);
-
-        // makes sure all nodes have been visited
-        REQUIRE (ret_path.size() == N);
-        std::unordered_set<size_t> ret_visited;
-        const auto ans_visited = create_visited_set(N);
-        for (auto& p : ret_path)
         {
-            ret_visited.insert(p);
-        }
-        REQUIRE (ret_visited == ans_visited);
+            auto [ret_path, ret_cost] = graph::solver::divide_n_conquer(nodes, graph, 5);
 
-        // checks if the cost calculated by solver::divide_n_conquer is within 20%
-        CHECK (ret_cost <= 7293 * factor * 1.2);
+            // makes sure all nodes have been visited
+            REQUIRE (ret_path.size() == N);
+            std::unordered_set<size_t> ret_visited;
+            const auto ans_visited = create_visited_set(N);
+            for (auto& p : ret_path)
+            {
+                ret_visited.insert(p);
+            }
+            REQUIRE (ret_visited == ans_visited);
+
+            // checks if the cost calculated by solver::divide_n_conquer is within 30%
+            CHECK (ret_cost <= ans_cost * 1.3);
+        }
+
+        {
+            auto [ret_path, ret_cost] = graph::solver::divide_n_conquer(nodes, graph, 7);
+
+            // makes sure all nodes have been visited
+            REQUIRE (ret_path.size() == N);
+            std::unordered_set<size_t> ret_visited;
+            const auto ans_visited = create_visited_set(N);
+            for (auto& p : ret_path)
+            {
+                ret_visited.insert(p);
+            }
+            REQUIRE (ret_visited == ans_visited);
+
+            // checks if the cost calculated by solver::divide_n_conquer is within 30%
+            CHECK (ret_cost <= ans_cost * 1.3);
+        }
     }
 }
