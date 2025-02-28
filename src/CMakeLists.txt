@@ -10,6 +10,8 @@ add_library(math_library mathlib.cc ${MATH_HEADER_LIST})
 add_library(filesystem_library loadlib.cc ${FILESYSTEM_HEADER_LIST})
 add_library(graph_library nodelib.cc solverlib.cc visualizerlib.cc ${FILESYSTEM_HEADER_LIST} ${GRAPH_HEADER_LIST})
 
+target_compile_options(graph_library PRIVATE -fno-exceptions)
+
 target_include_directories(math_library PUBLIC ../include)
 target_include_directories(filesystem_library PUBLIC ../include)
 target_include_directories(graph_library PUBLIC ../include)

@@ -32,7 +32,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     elseif(CMAKE_BUILD_TYPE STREQUAL "Test")
         add_compile_options(-Wall -Wextra -pedantic -O2)
     elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-        add_compile_options(-Wall -Wextra -pedantic -O3)
+        add_compile_options(-Wall -Wextra -pedantic -Ofast)
     endif()
 
     # linker flags
