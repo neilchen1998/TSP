@@ -52,7 +52,7 @@ namespace graph
     {
     public:
         Node(std::vector<std::vector<double>>&& graph, double cost);
-        Node(size_t parentIdx, size_t childIdx, boost::dynamic_bitset<> visitedParent, std::vector<std::vector<double>>&& graph, double cost, const std::vector<size_t>& parentPath, size_t startIdx = 0);
+        Node(size_t parentIdx, size_t childIdx, boost::dynamic_bitset<> visitedParent, std::vector<std::vector<double>>&& graph, double cost, const std::vector<size_t>& parentPath);
         ~Node() = default;
 
         double GetCost() const;
@@ -72,7 +72,6 @@ namespace graph
         void PrintPath() const;
 
     private:
-        size_t startIdx;
         size_t parentIdx;
         size_t curIdx;
         boost::dynamic_bitset<> visited;

@@ -11,7 +11,6 @@
 #include "graph/nodelib.hpp"
 
 graph::Node::Node(std::vector<std::vector<double>>&& curGraph, double curCost) :
-    startIdx(0),
     parentIdx(-1),
     curIdx(0),
     graph(std::move(curGraph)),
@@ -26,8 +25,7 @@ graph::Node::Node(std::vector<std::vector<double>>&& curGraph, double curCost) :
     path.push_back(curIdx);
 }
 
-graph::Node::Node(size_t parentIdx, size_t childIdx, boost::dynamic_bitset<> visitedParent, std::vector<std::vector<double>>&& graph, double cost, const std::vector<size_t>& parentPath, size_t startIdx) :
-    startIdx(startIdx),
+graph::Node::Node(size_t parentIdx, size_t childIdx, boost::dynamic_bitset<> visitedParent, std::vector<std::vector<double>>&& graph, double cost, const std::vector<size_t>& parentPath) :
     parentIdx(parentIdx),
     curIdx(childIdx),
     graph(std::move(graph)),
