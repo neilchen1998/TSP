@@ -324,7 +324,7 @@ std::tuple<std::vector<size_t>, double> graph::solver::divide_n_conquer(const st
     auto clusterGraph = create_graph(bestClusters);
 
     // travels among the clusters
-    auto [path, cost] = solver::DFS(clusterGraph);
+    auto [path, cost] = solver::branch_and_bound(clusterGraph);
 
     #if DEBUG
     std::cout << "Among clusters:\n";
