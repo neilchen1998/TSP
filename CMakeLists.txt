@@ -47,6 +47,8 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # compile definition
     if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "TEST")
         add_compile_definitions(DEBUG)
+    elseif(CMAKE_BUILD_TYPE STREQUAL "Test")
+        add_compile_definitions(TEST)
     endif()
 
 

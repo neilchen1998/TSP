@@ -156,8 +156,12 @@ std::tuple<std::vector<graph::Coordinate>, double> k_means(const std::vector<gra
     const size_t N = coordinates.size();
 
     // creates an int random generator
+    #if TEST
+    std::mt19937 gen(899269200);
+    #else
     std::random_device rd;
     std::mt19937 gen(rd());
+    #endif
     std::uniform_int_distribution<> dis(0, N - 1);
 
     // randomly selects a coordinate to be the center of a cluster
