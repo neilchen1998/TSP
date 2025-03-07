@@ -1,5 +1,5 @@
 # cmake requirements
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.30)
 
 project(
     TSP
@@ -70,8 +70,8 @@ FetchContent_Declare(fmt
 FetchContent_MakeAvailable(fmt)
 
 # all required packages
-find_package(Boost REQUIRED)
-find_package(Boost COMPONENTS program_options REQUIRED) # boost::program_options
+find_package(Boost REQUIRED CONFIG)
+find_package(Boost COMPONENTS program_options REQUIRED CONFIG) # boost::program_options
 
 # the compiled library code
 add_subdirectory(src)
